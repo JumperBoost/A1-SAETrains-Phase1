@@ -18,4 +18,13 @@ public class TuileVille extends Tuile {
         this.nbGaresMax = taille;
         this.nbGaresPosees = 0;
     }
+
+    public void ajouterGare(){
+        nbGaresPosees++;
+    }
+
+    @Override
+    public int getNbGares() {
+        return nbGaresPosees;
+    }
 }

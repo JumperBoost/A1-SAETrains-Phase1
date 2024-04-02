@@ -51,6 +51,10 @@ public abstract class Tuile {
         rails.add(joueur);
     }
 
+    public int getRailsSize() {
+        return rails.size();
+    }
+
     /**
      * Ajoute une voisine à la tuile courante, et ajoute la tuile courante comme
      * voisine de la tuile passée en argument.

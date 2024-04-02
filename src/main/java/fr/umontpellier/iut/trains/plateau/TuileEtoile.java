@@ -13,4 +13,8 @@ public class TuileEtoile extends Tuile {
         super();
         this.valeur = valeur;
     }
+
+    public int getValeur() {
+        return valeur;
+    }
 }

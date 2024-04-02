@@ -5,8 +5,9 @@ Chaque joueur possède au début dans sa pioche :
 - 7 cartes normales
 - 2 cartes rails (à poser)
 - 1 carte d'expansion de gare
-  Au début, mélanger les cartes.
-  Puis, chacun prend 5 cartes de la pioche.
+
+Au début, mélanger les cartes.
+Puis, chacun prend 5 cartes de la pioche.
 
 Le joueur qui commence est celui qui a "parcouru" le plus récemment le train. Chacun pose un cube de départ (à un endroit choisi qui admet de la place pour 2 ou 3 stations de préférence) avec aucun argent.
 

@@ -63,6 +63,20 @@ public abstract class Carte {
     public void jouer(Joueur joueur) {
     }
 
+    /*
+     * Cette fonction permet de vérifier si le joueur peut jouer la carte courante
+     */
+    public boolean peutJouer() {
+        return !(typesCarte.contains(Type.VICTOIRE) || typesCarte.contains(Type.FERAILLE));
+    }
+
+    /*
+     * Cette fonction permet de vérifier si le joueur peut acheter la carte courante
+     */
+    public boolean peutAcheter(Joueur joueur) {
+        return joueur.getArgent() >= cout;
+    }
+
     @Override
     public String toString() {
         return nom;

@@ -10,6 +10,7 @@ import java.util.StringJoiner;
 import fr.umontpellier.iut.trains.cartes.Carte;
 import fr.umontpellier.iut.trains.cartes.FabriqueListeDeCartes;
 import fr.umontpellier.iut.trains.cartes.ListeDeCartes;
+import fr.umontpellier.iut.trains.plateau.*;
 
 public class Joueur {
     /**
@@ -26,7 +27,7 @@ public class Joueur {
     private int argent;
     /**
      * Nombre de points rails dont le joueur dispose. Ces points sont obtenus en
-     * jouant les cartes RAIL (vertes) et remis à zéro entre les tous
+     * jouant les cartes RAIL (vertes) et remis à zéro entre les tours
      */
     private int pointsRails;
     /**
@@ -127,8 +128,12 @@ public class Joueur {
      * @return la carte piochée ou {@code null} si aucune carte disponible
      */
     public Carte piocher() {
-        // À FAIRE
-        return null;
+        if(pioche.isEmpty()) {
+            defausse.melanger();
+            pioche.addAll(defausse);
+            defausse.clear();
+        }
+        return !pioche.isEmpty() ? pioche.remove(0) : null;
     }
 
     /**
@@ -136,7 +141,7 @@ public class Joueur {
      * <p>
      * Si à un moment il faut encore piocher des cartes et que la pioche est vide,
      * la défausse est mélangée et toutes ses cartes sont déplacées dans la pioche.
-     * S'il n'y a plus de cartes à piocher la méthode s'interromp et les cartes qui
+     * S'il n'y a plus de cartes à piocher la méthode s'interrompt et les cartes qui
      * ont pu être piochées sont renvoyées.
      * 
      * @param n nombre de cartes à piocher
@@ -145,8 +150,15 @@ public class Joueur {
      *         défausse)
      */
     public List<Carte> piocher(int n) {
-        // À FAIRE
-        return null;
+        List<Carte> cartes = new ArrayList<>();
+        Carte carte;
+        for(int i = 0; i < n; i++) {
+            carte = piocher();
+            if(carte == null)
+                break;
+            cartes.add(carte);
+        }
+        return cartes;
     }
 
     /**
@@ -192,15 +204,84 @@ public class Joueur {
         // Boucle principale
         while (!finTour) {
             List<String> choixPossibles = new ArrayList<>();
-            // À FAIRE: préparer la liste des choix possibles
-
+            // Lister le choix des possibilités
+            for (Carte carte : main) {
+                // Ajoute les noms de toutes les cartes possibles à jouer
+                if(carte.peutJouer())
+                    choixPossibles.add(carte.getNom());
+            }
+            for (Map.Entry<String, ListeDeCartes> carte_reserve: jeu.getReserve().entrySet()) {
+                // ajoute les noms des cartes dans la réserve préfixés de "ACHAT:"
+                if(!carte_reserve.getValue().isEmpty() && carte_reserve.getValue().get(0).peutAcheter(this))
+                    choixPossibles.add("ACHAT:" + carte_reserve.getKey());
+            }
             // Choix de l'action à réaliser
             String choix = choisir(String.format("Tour de %s", this.nom), choixPossibles, null, true);
 
-            // À FAIRE: exécuter l'action demandée par le joueur
+            // Exécuter l'action demandée par le joueur
+            if (choix.startsWith("ACHAT:")) {
+                // Prendre une carte dans la réserve
+                String nomCarte = choix.split(":")[1];
+                Carte carte = jeu.prendreDansLaReserve(nomCarte);
+                if (carte != null) {
+                    log("Reçoit " + carte); // affichage dans le log
+                    cartesRecues.add(carte);
+                }
+            } else if(choix.startsWith("TUILE:")) {
+                if (pointsRails > 0) {
+                    // Poser un rail sur la tuile du plateau
+                    int tuile_index = Integer.parseInt(choix.split("TUILE:")[1]);
+                    Tuile tuile = jeu.getTuile(tuile_index);
+                    if (tuile instanceof TuileMer || tuile.hasRail(this)) {
+                        log("Impossible de poser un rail sur cette tuile.");
+                        continue;
+                    }
+
+                    // Déterminer le coût supplémentaire
+                    int cout_supp = 0;
+                    if (tuile instanceof TuileTerrain) {
+                        TypeTerrain type = ((TuileTerrain) tuile).getTypeTerrain();
+                        if (type == TypeTerrain.FLEUVE)
+                            cout_supp = 1;
+                        else if (type == TypeTerrain.MONTAGNE)
+                            cout_supp = 2;
+                    } else if (tuile instanceof TuileVille) {
+                        cout_supp = 1 + tuile.getNbGares();
+                    } else if (tuile instanceof TuileEtoile) {
+                        cout_supp = ((TuileEtoile) tuile).getValeur();
+                    }
+                    cout_supp += tuile.getRailsSize();
+
+                    // Placer une gare dans une tuile si possible
+                    if (argent >= cout_supp) {
+                        if(tuile.getRailsSize() > 0)
+                            main.add(jeu.prendreDansLaReserve("Ferraile"));
+                        tuile.ajouterRail(this);
+                        pointsRails--;
+                        log("Gare posé.");
+                    } else log("Vous n'avez pas assez d'argent nécessaire pour poser un rail sur cette tuile.");
+                } else log("Vous n'avez pas de point de rail nécessaire pour cette tuile.");
+            } else if (choix.equals("")) {
+                // terminer le tour
+                finTour = true;
+            } else {
+                // jouer une carte de la main
+                Carte carte = main.retirer(choix);
+                log("Joue " + carte); // affichage dans le log
+                cartesEnJeu.add(carte); // mettre la carte en jeu
+                carte.jouer(this);  // exécuter l'action de la carte
+            }
         }
         // Finalisation
         // À FAIRE: compléter la finalisation du tour
+        defausse.addAll(main);
+        main.clear();
+        defausse.addAll(cartesRecues);
+        defausse.addAll(cartesEnJeu);
+        cartesRecues.clear();
+        cartesEnJeu.clear();
+
+        main.addAll(piocher(5));
     }
 
     /**
@@ -336,5 +417,9 @@ public class Joueur {
                 Map.entry("cartesRecues", cartesRecues.dataMap()),
                 Map.entry("pioche", pioche.dataMap()),
                 Map.entry("actif", jeu.getJoueurCourant() == this));
+    }
+
+    public int getArgent() {
+        return argent;
     }
 }
