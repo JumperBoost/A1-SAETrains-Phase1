@@ -231,7 +231,7 @@ public class Joueur {
                     choixPossibles.add(carte.getNom());
             }
             for (Map.Entry<String, ListeDeCartes> carte_reserve: jeu.getReserve().entrySet()) {
-                // ajoute les noms des cartes dans la réserve préfixés de "ACHAT:"
+                // Ajoute les noms des cartes dans la réserve préfixés de "ACHAT:"
                 if(!carte_reserve.getValue().isEmpty() && carte_reserve.getValue().get(0).peutAcheter(this))
                     choixPossibles.add("ACHAT:" + carte_reserve.getKey());
             }
