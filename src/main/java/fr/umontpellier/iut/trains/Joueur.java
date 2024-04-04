@@ -31,6 +31,11 @@ public class Joueur {
      */
     private int pointsRails;
     /**
+     * Nombre de points victoire bonus récupérée durant la partie. Ces points sont obtenus en
+     * jouant les cartes TRAINS (bleus)
+     */
+    private int pvBonus;
+    /**
      * Nombre de jetons rails disponibles (non placés sur le plateau)
      */
     private int nbJetonsRails;
@@ -66,6 +71,7 @@ public class Joueur {
         this.couleur = couleur;
         argent = 0;
         pointsRails = 0;
+        pvBonus = 0;
         nbJetonsRails = 20;
         main = new ListeDeCartes();
         defausse = new ListeDeCartes();
@@ -115,8 +121,22 @@ public class Joueur {
      * @return le score total du joueur
      */
     public int getScoreTotal() {
-        // À FAIRE
-        return 0;
+        int nb = 0;
+        // Calcul des points via les stations et les rails
+        for(Tuile tuile : jeu.getTuiles()) {
+            if(tuile instanceof TuileVille && tuile.hasRail(this)) {
+                nb += (int) Math.pow(2, tuile.getNbGares());
+            } else if(tuile instanceof TuileEtoile && tuile.hasRail(this)) {
+                nb += ((TuileEtoile) tuile).getValeur();
+            }
+        }
+        // Calcul des points via les cartes victoires
+        for (Carte carte : getCartes()) {
+            nb += carte.getPv();
+        }
+        // Ajout des points victoire bonus
+        nb += pvBonus;
+        return nb;
     }
 
     /**
@@ -215,6 +235,10 @@ public class Joueur {
                 if(!carte_reserve.getValue().isEmpty() && carte_reserve.getValue().get(0).peutAcheter(this))
                     choixPossibles.add("ACHAT:" + carte_reserve.getKey());
             }
+            for(int i = 0; i < 80; i++)
+                // Ajoute les positions des tuiles possibles à jouer
+                choixPossibles.add("TUILE:" + i);
+
             // Choix de l'action à réaliser
             String choix = choisir(String.format("Tour de %s", this.nom), choixPossibles, null, true);
 
@@ -258,6 +282,7 @@ public class Joueur {
                             main.add(jeu.prendreDansLaReserve("Ferraile"));
                         tuile.ajouterRail(this);
                         pointsRails--;
+                        nbJetonsRails--;
                         log("Gare posé.");
                     } else log("Vous n'avez pas assez d'argent nécessaire pour poser un rail sur cette tuile.");
                 } else log("Vous n'avez pas de point de rail nécessaire pour cette tuile.");
@@ -282,6 +307,7 @@ public class Joueur {
         cartesEnJeu.clear();
 
         main.addAll(piocher(5));
+        pointsRails = 0;
     }
 
     /**
@@ -389,6 +415,14 @@ public class Joueur {
         joiner.add("  Cartes reçues: " + cartesRecues);
         joiner.add("  Cartes en main: " + main);
         return joiner.toString();
+    }
+
+    public List<Carte> getCartes() {
+        List<Carte> cartes = new ArrayList<>();
+        cartes.addAll(pioche);
+        cartes.addAll(main);
+        cartes.addAll(defausse);
+        return cartes;
     }
 
     /**

@@ -11,6 +11,7 @@ public abstract class Carte {
     private final List<Type> typesCarte;
     private final String couleur;
     private final String effet;
+    private int pv;
 
     /**
      * Constructeur simple
@@ -36,6 +37,7 @@ public abstract class Carte {
         this.typesCarte = typesCarte;
         this.couleur = couleur;
         this.effet = effet;
+        this.pv = 0;
     }
 
     public Carte(String nom, int valeur, int cout, List<Type> typesCarte, String couleur) {
@@ -50,9 +52,31 @@ public abstract class Carte {
         this(nom, valeur, cout, List.of(typeCarte), typeCarte.getCouleur(), effet);
     }
 
+    public Carte(String nom, int valeur, int cout, List<Type> typeCarte, String couleur, String effet, int pv) {
+        this(nom, valeur, cout, typeCarte, couleur, effet);
+        this.pv = pv;
+    }
+
+    public Carte(String nom, int valeur, int cout, Type typeCarte, String effet, int pv) {
+        this(nom, valeur, cout, typeCarte, effet);
+        this.pv = pv;
+    }
+
     public String getNom() {
         return nom;
-    }    
+    }
+
+    public Type getFirstType() {
+        return typesCarte.get(0);
+    }
+
+    public List<Type> getTypesCarte(){
+        return typesCarte;
+    }
+
+    public int getPv(){
+        return pv;
+    }
 
     /**
      * Cette fonction est exécutée lorsqu'un joueur joue la carte pendant son tour.

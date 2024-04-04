@@ -20,7 +20,8 @@ public class TuileVille extends Tuile {
     }
 
     public void ajouterGare(){
-        nbGaresPosees++;
+        if (nbGaresPosees < nbGaresMax)
+            nbGaresPosees++;
     }
 
     @Override
