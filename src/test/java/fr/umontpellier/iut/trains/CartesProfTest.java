@@ -839,7 +839,7 @@ public class CartesProfTest extends BaseTestClass {
         assertTrue(containsReferences(cartesRecues));
         assertEquals(1, getArgent(joueur));
         assertEquals(0, getPointsRails(joueur));
-        assertEquals(getScore(joueur), 1);
+        assertEquals(1, joueur.getScoreTotal());
     }
 
     @Test
