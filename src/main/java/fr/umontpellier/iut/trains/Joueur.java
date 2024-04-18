@@ -44,8 +44,7 @@ public class Joueur {
      */
     private ListeDeCartes main;
     /**
-     * Liste des cartes dans la pioche (le début de la liste correspond au haut de
-     * la pile)
+     * Liste des cartes dans la pioche (le début de la liste correspond au haut de la pile)
      */
     private ListeDeCartes pioche;
     /**
@@ -60,6 +59,24 @@ public class Joueur {
      * Liste des cartes reçues pendant le tour
      */
     private ListeDeCartes cartesRecues;
+    /**
+     * Carte action en cours d'utilisation
+     * <p>
+     * Permet de connaître la carte action en cours d'utilisation
+     */
+    private Carte carteAction;
+    /**
+     * Liste des choix possibles d'une action Action
+     * <p>
+     * Permet de lister et connaître la liste des choix possibles lors de l'utilisation en cours d'une carte Action
+     */
+    private List<String> choixPossiblesAction;
+    /**
+     * Booléen pour autoriser un prompt vide
+     * <p>
+     * Permet de savoir si on peut utiliser un prompt vide lors de la demande d'un choix
+     */
+    private boolean peutPasser;
     /**
      * Couleur du joueur (utilisé par l'interface graphique)
      */
@@ -78,6 +95,9 @@ public class Joueur {
         pioche = new ListeDeCartes();
         cartesEnJeu = new ListeDeCartes();
         cartesRecues = new ListeDeCartes();
+        carteAction = null;
+        choixPossiblesAction = new ArrayList<>();
+        peutPasser = true;
 
         // créer 7 Train omnibus (non disponibles dans la réserve)
         pioche.addAll(FabriqueListeDeCartes.creerListeDeCartes("Train omnibus", 7));
@@ -182,6 +202,58 @@ public class Joueur {
     }
 
     /**
+     * Retire la carte de la main et l'ajoute dans les cartes en jeu
+     *
+     * @param carte Une carte quelconque présent dans la main
+     */
+    public void utiliserCarte(Carte carte) {
+        if(main.contains(carte)) {
+            main.remove(carte);
+            cartesEnJeu.add(carte);
+        }
+    }
+
+    /**
+     * Récupérer la carte action en cours d'utilisation
+     *
+     * @return La carte d'action ({@code null} si inexistant)
+     */
+    public Carte getCarteAction() {
+        return carteAction;
+    }
+
+    /**
+     * Définir la carte d'action
+     *
+     * @param carte Une carte d'action
+     */
+    public void setCarteAction(Carte carte) {
+        viderChoixPossiblesActions();
+        this.carteAction = carte;
+    }
+
+    public void ajouterChoixPossibleAction(String choixPossible) {
+        this.choixPossiblesAction.add(choixPossible);
+    }
+
+    public void retirerChoixPossibleAction(String choixPossible) {
+        this.choixPossiblesAction.remove(choixPossible);
+    }
+
+    public void viderChoixPossiblesActions() {
+        this.choixPossiblesAction.clear();
+    }
+
+    /**
+     * Définir l'état de passement
+     *
+     * @param peutPasser Un booléen permettant d'autoriser ou non un prompt vide
+     */
+    public void setPeutPasser(boolean peutPasser) {
+        this.peutPasser = peutPasser;
+    }
+
+    /**
      * Joue un tour complet du joueur
      * <p>
      * Le tour du joueur se déroule en plusieurs étapes :
@@ -224,23 +296,26 @@ public class Joueur {
         // Boucle principale
         while (!finTour) {
             List<String> choixPossibles = new ArrayList<>();
-            // Lister le choix des possibilités
-            for (Carte carte : main) {
-                // Ajoute les noms de toutes les cartes possibles à jouer
-                if(carte.peutJouer())
-                    choixPossibles.add(carte.getNom());
-            }
-            for (Map.Entry<String, ListeDeCartes> carte_reserve: jeu.getReserve().entrySet()) {
-                // Ajoute les noms des cartes dans la réserve préfixés de "ACHAT:"
-                if(!carte_reserve.getValue().isEmpty() && carte_reserve.getValue().get(0).peutAcheter(this))
-                    choixPossibles.add("ACHAT:" + carte_reserve.getKey());
-            }
-            for(int i = 0; i < 80; i++)
-                // Ajoute les positions des tuiles possibles à jouer
-                choixPossibles.add("TUILE:" + i);
+            if(carteAction == null) {
+                // Lister le choix des possibilités
+                for (Carte carte : main) {
+                    // Ajoute les noms de toutes les cartes possibles à jouer
+                    if (carte.peutJouer(this))
+                        choixPossibles.add(carte.getNom());
+                }
+                // Si aucune carte action est en cours, on autorise l'achat de cartes et de tuiles
+                for (Map.Entry<String, ListeDeCartes> carte_reserve : jeu.getReserve().entrySet()) {
+                    // Ajoute les noms des cartes dans la réserve préfixés de "ACHAT:"
+                    if (!carte_reserve.getValue().isEmpty() && carte_reserve.getValue().get(0).peutAcheter(this))
+                        choixPossibles.add("ACHAT:" + carte_reserve.getKey());
+                }
+                for (int i = 0; i < 80; i++)
+                    // Ajoute les positions des tuiles possibles à jouer
+                    choixPossibles.add("TUILE:" + i);
+            } else choixPossibles.addAll(choixPossiblesAction);
 
             // Choix de l'action à réaliser
-            String choix = choisir(String.format("Tour de %s", this.nom), choixPossibles, null, true);
+            String choix = choisir(String.format("Tour de %s", this.nom), choixPossibles, null, peutPasser);
 
             // Exécuter l'action demandée par le joueur
             if (choix.startsWith("ACHAT:")) {
@@ -286,15 +361,19 @@ public class Joueur {
                         log("Gare posé.");
                     } else log("Vous n'avez pas assez d'argent nécessaire pour poser un rail sur cette tuile.");
                 } else log("Vous n'avez pas de point de rail nécessaire pour cette tuile.");
-            } else if (choix.equals("")) {
-                // terminer le tour
-                finTour = true;
+            } else if (choix.isEmpty()) {
+                if(carteAction == null) {
+                    // terminer le tour
+                    finTour = true;
+                } else carteAction.jouer(this, choix);
             } else {
-                // jouer une carte de la main
-                Carte carte = main.retirer(choix);
-                log("Joue " + carte); // affichage dans le log
-                cartesEnJeu.add(carte); // mettre la carte en jeu
-                carte.jouer(this);  // exécuter l'action de la carte
+                if(carteAction == null) {
+                    // jouer une carte de la main
+                    Carte carte = main.retirer(choix);
+                    log("Joue " + carte); // affichage dans le log
+                    cartesEnJeu.add(carte); // mettre la carte en jeu
+                    carte.jouer(this);  // exécuter l'action de la carte
+                } else carteAction.jouer(this, choix);
             }
         }
         // Finalisation
@@ -425,6 +504,22 @@ public class Joueur {
         return cartes;
     }
 
+    public ListeDeCartes getMain() {
+        return main;
+    }
+
+    public ListeDeCartes getPioche() {
+        return pioche;
+    }
+
+    public ListeDeCartes getDefausse() {
+        return defausse;
+    }
+
+    public ListeDeCartes getCartesRecues() {
+        return cartesRecues;
+    }
+
     /**
      * @return une représentation du joueur pour l'affichage dans le log du jeu
      */
@@ -455,5 +550,13 @@ public class Joueur {
 
     public int getArgent() {
         return argent;
+    }
+
+    public void setArgent(int argent) {
+        this.argent = argent;
+    }
+
+    public Jeu getJeu() {
+        return jeu;
     }
 }

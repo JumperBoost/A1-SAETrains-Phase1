@@ -80,21 +80,39 @@ public abstract class Carte {
 
     /**
      * Cette fonction est exécutée lorsqu'un joueur joue la carte pendant son tour.
-     * Toutes les cartes ont une méthode jouer, mais elle ne fait rien par défaut.
+     * Toutes les cartes ont une méthode jouer, la carte est utilisée par défaut et l'argent est attribuée au joueur.
      * 
      * @param joueur le joueur qui joue la carte
      */
     public void jouer(Joueur joueur) {
+        // On applique les actions par défaut seulement si aucune carte action n'est en cours d'utilisation
+        if(joueur.getCarteAction() == null) {
+            joueur.utiliserCarte(this);
+            joueur.setArgent(joueur.getArgent() + valeur);
+        }
     }
 
-    /*
-     * Cette fonction permet de vérifier si le joueur peut jouer la carte courante
+    /**
+     * Cette fonction est exécutée lorsqu'un joueur joue l'effet de la carte Action pendant son tour.
+     * Toutes les cartes ont une méthode jouer, mais elle ne fait rien par défaut.
+     *
+     * @param joueur le joueur qui joue la carte
+     * @param nomCarte le nom de la carte utilisée pour l'action
      */
-    public boolean peutJouer() {
+    public void jouer(Joueur joueur, String nomCarte) {
+
+    }
+
+    /**
+     * Cette fonction permet de vérifier si le joueur peut jouer la carte courante
+     *
+     * @param joueur Le joueur concerné
+     */
+    public boolean peutJouer(Joueur joueur) {
         return !(typesCarte.contains(Type.VICTOIRE) || typesCarte.contains(Type.FERAILLE));
     }
 
-    /*
+    /**
      * Cette fonction permet de vérifier si le joueur peut acheter la carte courante
      */
     public boolean peutAcheter(Joueur joueur) {
