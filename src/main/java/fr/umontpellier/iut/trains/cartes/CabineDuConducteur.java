@@ -29,9 +29,9 @@ public class CabineDuConducteur extends Carte {
             joueur.viderChoixPossiblesActions();
     }
 
-    // PRÉ-REQUIS : Au moins une carte dans la main et la pioche
+    // PRÉ-REQUIS : Au moins une carte dans la main et la pioche ou défausse
     @Override
     public boolean peutJouer(Joueur joueur) {
-        return super.peutJouer(joueur) && !joueur.getMain().isEmpty() && !joueur.getPioche().isEmpty();
+        return super.peutJouer(joueur) && !joueur.getMain().isEmpty() && !(joueur.getPioche().isEmpty() && joueur.getDefausse().isEmpty());
     }
 }

@@ -28,4 +28,8 @@ public class TuileVille extends Tuile {
     public int getNbGares() {
         return nbGaresPosees;
     }
+
+    public int getNbGaresDispo() {
+        return nbGaresMax - nbGaresPosees;
+    }
 }

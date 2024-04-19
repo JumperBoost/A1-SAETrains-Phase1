@@ -13,7 +13,7 @@ public class AtelierDeMaintenance extends Carte {
         joueur.setCarteAction(this);
         joueur.setPeutPasser(false);
         for(Carte carte : joueur.getMain())
-            if(carte.getTypesCarte().contains(Type.TRAIN))
+            if(carte.getFirstType() == Type.TRAIN)
                 joueur.ajouterChoixPossibleAction(carte.getNom());
     }
 

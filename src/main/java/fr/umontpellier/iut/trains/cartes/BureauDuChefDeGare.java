@@ -13,7 +13,7 @@ public class BureauDuChefDeGare extends Carte {
         joueur.setCarteAction(this);
         joueur.setPeutPasser(false);
         for(Carte carte : joueur.getMain())
-            if(carte.getTypesCarte().contains(Type.ACTION))
+            if(carte.getFirstType() == Type.ACTION)
                 joueur.ajouterChoixPossibleAction(carte.getNom());
     }
 
