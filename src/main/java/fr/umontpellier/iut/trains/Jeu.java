@@ -213,6 +213,7 @@ public class Jeu implements Runnable {
     public boolean estFini() {
         if (nbJetonsGare==0){return true;}
         int nbvide = 0;
+
         for (int i=0; i<reserve.size(); i++) {
             if (reserve.get(i).isEmpty()) {
                 nbvide += 1;
