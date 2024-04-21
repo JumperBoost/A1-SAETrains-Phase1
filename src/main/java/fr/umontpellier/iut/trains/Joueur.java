@@ -171,6 +171,10 @@ public class Joueur {
         return nb;
     }
 
+    public void donnePvBonus(int pv){
+        pvBonus += pv;
+    }
+
     /**
      * Retire et renvoie la première carte de la pioche.
      * <p>
