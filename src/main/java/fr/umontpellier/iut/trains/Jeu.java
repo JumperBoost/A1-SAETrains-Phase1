@@ -211,6 +211,7 @@ public class Jeu implements Runnable {
      * @return {@code true} si la partie est finie, {@code false} sinon
      */
     public boolean estFini() {
+        if (nbJetonsGare==0){return true;}
         // À FAIRE: réécrire cette méthode
         return false;
     }
