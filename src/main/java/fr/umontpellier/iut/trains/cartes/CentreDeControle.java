@@ -13,13 +13,15 @@ public class CentreDeControle extends Carte {
         joueur.setCarteAction(this);
         joueur.setPeutPasser(false);
         joueur.getMain().add(joueur.piocher());
-        for(Carte carte : joueur.getPioche())
+        for(Carte carte : joueur.getCartesComplet())
             joueur.ajouterChoixPossibleAction(carte.getNom());
+        for(String nomCarte : joueur.getJeu().getListeNomsCartes())
+            joueur.ajouterChoixPossibleAction(nomCarte);
     }
 
     @Override
-    public void jouer(Joueur joueur, String nomCarte) {
-        if(joueur.getPioche().get(0).getNom().equals(nomCarte))
+    public void jouer(Joueur joueur, String choix) {
+        if(joueur.getPioche().get(0).getNom().equals(choix))
             joueur.getMain().add(joueur.piocher());
         joueur.setCarteAction(null);
         joueur.setPeutPasser(true);

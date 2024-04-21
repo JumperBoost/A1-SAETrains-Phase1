@@ -18,8 +18,8 @@ public class Echangeur extends Carte {
     }
 
     @Override
-    public void jouer(Joueur joueur, String nomCarte) {
-        joueur.getPioche().add(0, joueur.getCartesEnJeu().retirer(nomCarte));
+    public void jouer(Joueur joueur, String choix) {
+        joueur.getPioche().add(0, joueur.getCartesEnJeu().retirer(choix));
         joueur.setCarteAction(null);
         joueur.setPeutPasser(true);
     }

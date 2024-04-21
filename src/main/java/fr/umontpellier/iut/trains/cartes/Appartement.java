@@ -9,7 +9,8 @@ public class Appartement extends Carte {
 
     @Override
     public void jouer(Joueur joueur) {
+        super.jouer(joueur);
         joueur.donnePvBonus(super.getPv());
-        //Pas terminé, doit faire piocher une carte feraille.
+        joueur.getCartesRecues().add(joueur.getJeu().prendreDansLaReserve("Ferraille"));
     }
 }

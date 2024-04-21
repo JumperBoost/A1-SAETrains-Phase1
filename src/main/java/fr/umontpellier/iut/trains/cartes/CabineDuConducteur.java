@@ -16,13 +16,13 @@ public class CabineDuConducteur extends Carte {
     }
 
     @Override
-    public void jouer(Joueur joueur, String nomCarte) {
-        if(nomCarte.isEmpty()) {
+    public void jouer(Joueur joueur, String choix) {
+        if(choix.isEmpty()) {
             joueur.setCarteAction(null);
             return;
         }
 
-        joueur.getDefausse().add(joueur.getMain().retirer(nomCarte));
+        joueur.getDefausse().add(joueur.getMain().retirer(choix));
         joueur.getMain().add(joueur.piocher());
         // Vérifier si l'on peut toujours défausser
         if(joueur.getMain().isEmpty())

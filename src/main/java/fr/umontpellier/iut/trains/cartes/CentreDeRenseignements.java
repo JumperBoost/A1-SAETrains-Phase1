@@ -7,44 +7,43 @@ import java.util.List;
 
 public class CentreDeRenseignements extends Carte {
     private int nbCartes;
-    private int nbCartesMax;
-
     private final List<String> ordreCartes;
     private final ListeDeCartes cartes;
     private String carteChoisis;
 
     public CentreDeRenseignements() {
         super("Centre de renseignements", 1, 4, Type.ACTION, "Dévoilez les 4 premières cartes de votre deck. Vous pouvez en prendre 1 dans votre main. Remettez les autres sur le dessus de votre deck dans l'ordre de votre choix.");
-        nbCartes = 0;
         ordreCartes = new ArrayList<>();
         cartes = new ListeDeCartes();
-        carteChoisis = "";
     }
 
     @Override
     public void jouer(Joueur joueur) {
         super.jouer(joueur);
+        carteChoisis = "";
+        ordreCartes.clear();
+        cartes.clear();
         joueur.setCarteAction(this);
-        nbCartesMax = Math.min(4, joueur.getPioche().size() + joueur.getDefausse().size());
+        nbCartes = Math.min(4, joueur.getPioche().size() + joueur.getDefausse().size());
         // Piocher les cartes
-        cartes.addAll(joueur.piocher(nbCartesMax));
+        cartes.addAll(joueur.piocher(nbCartes));
         for(Carte carte : cartes)
             joueur.ajouterChoixPossibleAction(carte.getNom());
     }
 
     @Override
-    public void jouer(Joueur joueur, String nomCarte) {
-        if(nbCartes == 0 && joueur.getPeutPasser()) {
-            carteChoisis = nomCarte;
+    public void jouer(Joueur joueur, String choix) {
+        if(joueur.getPeutPasser()) {
+            carteChoisis = choix;
             joueur.setPeutPasser(false);
-        } else ordreCartes.add(nomCarte); // Ajouter la carte à l'ordre si elle n'est pas la carte choisie
+        } else ordreCartes.add(choix); // Ajouter la carte à l'ordre si elle n'est pas la carte choisie
 
-        if(!nomCarte.isEmpty()) {
-            joueur.retirerChoixPossibleAction(nomCarte);
-            nbCartes++;
+        if(!choix.isEmpty()) {
+            joueur.retirerChoixPossibleAction(choix);
+            nbCartes--;
         }
 
-        if(nbCartes == nbCartesMax) {
+        if(nbCartes == 0) {
             if(cartes.count(carteChoisis) > 0)
                 joueur.getMain().add(cartes.retirer(carteChoisis));
             joueur.setCarteAction(null);

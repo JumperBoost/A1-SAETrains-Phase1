@@ -18,6 +18,10 @@ public class Joueur {
      */
     private Jeu jeu;
     /**
+     * Booléen pour savoir si le tour du joueur est terminé
+     */
+    private boolean finTour;
+    /**
      * Nom du joueur (pour les affichages console et UI)
      */
     private String nom;
@@ -86,8 +90,13 @@ public class Joueur {
     // Attributs nécessaires pour gérer les effets des cartes
 
     private boolean surcoutAdversaires;
+    private boolean surcoutRiviere;
+    private boolean surcoutMontagne;
+    private boolean surcoutVille;
+    private boolean surcoutRail;
     private boolean recevoirFerraille;
     private boolean bonusFerronnerie;
+    private boolean bonusTrainMatinal;
 
     public Joueur(Jeu jeu, String nom, CouleurJoueur couleur) {
         this.jeu = jeu;
@@ -108,8 +117,13 @@ public class Joueur {
 
         // Initialisation des attributs nécessaires pour gérer les effets des cartes
         surcoutAdversaires = true;
+        surcoutRiviere = true;
+        surcoutMontagne = true;
+        surcoutVille = true;
+        surcoutRail = true;
         recevoirFerraille = true;
         bonusFerronnerie = false;
+        bonusTrainMatinal = false;
 
         // créer 7 Train omnibus (non disponibles dans la réserve)
         pioche.addAll(FabriqueListeDeCartes.creerListeDeCartes("Train omnibus", 7));
@@ -249,7 +263,8 @@ public class Joueur {
     }
 
     public void ajouterChoixPossibleAction(String choixPossible) {
-        this.choixPossiblesAction.add(choixPossible);
+        if(!this.choixPossiblesAction.contains(choixPossible))
+            this.choixPossiblesAction.add(choixPossible);
     }
 
     public void retirerChoixPossibleAction(String choixPossible) {
@@ -317,11 +332,11 @@ public class Joueur {
         // À FAIRE: compléter l'initialisation du tour si nécessaire (mais possiblement
         // rien de spécial à faire)
 
-        boolean finTour = false;
+        finTour = false;
         // Boucle principale
         while (!finTour) {
             List<String> choixPossibles = new ArrayList<>();
-            if(carteAction == null) {
+            if(carteAction == null || bonusTrainMatinal) {
                 // Lister le choix des possibilités
                 for (Carte carte : main) {
                     // Ajoute les noms de toutes les cartes possibles à jouer
@@ -337,6 +352,10 @@ public class Joueur {
                 for (int i = 0; i < 80; i++)
                     // Ajoute les positions des tuiles possibles à jouer
                     choixPossibles.add("TUILE:" + i);
+
+                // Ajoute les choix possibles d'une action Action passive
+                if(bonusTrainMatinal)
+                    choixPossibles.addAll(choixPossiblesAction);
             } else choixPossibles.addAll(choixPossiblesAction);
 
             // Choix de l'action à réaliser
@@ -344,63 +363,7 @@ public class Joueur {
 
             // Exécuter l'action demandée par le joueur
             if(carteAction == null) {
-                if (choix.startsWith("ACHAT:")) {
-                    // Prendre une carte dans la réserve
-                    String nomCarte = choix.split(":")[1];
-                    Carte carte = jeu.prendreDansLaReserve(nomCarte);
-                    if (carte != null) {
-                        log("Reçoit " + carte); // affichage dans le log
-                        cartesRecues.add(carte);
-                    }
-                } else if (choix.startsWith("TUILE:")) {
-                    if (pointsRails > 0) {
-                        // Poser un rail sur la tuile du plateau
-                        int tuile_index = Integer.parseInt(choix.split("TUILE:")[1]);
-                        Tuile tuile = jeu.getTuile(tuile_index);
-                        if (tuile instanceof TuileMer || tuile.hasRail(this)) {
-                            log("Impossible de poser un rail sur cette tuile.");
-                            continue;
-                        }
-
-                        // Déterminer le coût supplémentaire
-                        int cout_supp = 0;
-                        if (tuile instanceof TuileTerrain) {
-                            TypeTerrain type = ((TuileTerrain) tuile).getTypeTerrain();
-                            if (type == TypeTerrain.FLEUVE)
-                                cout_supp = 1;
-                            else if (type == TypeTerrain.MONTAGNE)
-                                cout_supp = 2;
-                        } else if (tuile instanceof TuileVille) {
-                            cout_supp = 1 + tuile.getNbGares();
-                        } else if (tuile instanceof TuileEtoile) {
-                            cout_supp = ((TuileEtoile) tuile).getValeur();
-                        }
-                        // Ajouter le coût supplémentaire des rails des autres joueurs
-                        if (surcoutAdversaires)
-                            cout_supp += tuile.getRailsSize();
-
-                        // Placer une gare dans une tuile si possible
-                        if (argent >= cout_supp) {
-                            if (recevoirFerraille && tuile.getRailsSize() > 0 && surcoutAdversaires)
-                                main.add(jeu.prendreDansLaReserve("Ferraille"));
-                            if (bonusFerronnerie)
-                                argent += 2;
-                            tuile.ajouterRail(this);
-                            pointsRails--;
-                            nbJetonsRails--;
-                            log("Gare posé.");
-                        } else log("Vous n'avez pas assez d'argent nécessaire pour poser un rail sur cette tuile.");
-                    } else log("Vous n'avez pas de point de rail nécessaire pour cette tuile.");
-                } else if (choix.isEmpty()) {
-                    // terminer le tour
-                    finTour = true;
-                } else {
-                    // jouer une carte de la main
-                    Carte carte = main.retirer(choix);
-                    log("Joue " + carte); // affichage dans le log
-                    cartesEnJeu.add(carte); // mettre la carte en jeu
-                    carte.jouer(this);  // exécuter l'action de la carte
-                }
+                executerChoix(choix);
             } else carteAction.jouer(this, choix);
         }
         // Finalisation
@@ -417,8 +380,79 @@ public class Joueur {
         pointsRails = 0;
         // Réinitialisation des attributs spécifiques nécessaires pour gérer les effets des cartes
         surcoutAdversaires = true;
+        surcoutRiviere = true;
+        surcoutMontagne = true;
+        surcoutVille = true;
+        surcoutRail = true;
         recevoirFerraille = true;
         bonusFerronnerie = false;
+        bonusTrainMatinal = false;
+    }
+
+    public void executerChoix(String choix) {
+        if (choix.startsWith("ACHAT:")) {
+            // Prendre une carte dans la réserve
+            String nomCarte = choix.split(":")[1];
+            Carte carte = jeu.prendreDansLaReserve(nomCarte);
+            if (carte != null) {
+                log("Reçoit " + carte); // affichage dans le log
+                cartesRecues.add(carte);
+                argent -= carte.getValeur();
+            }
+        } else if (choix.startsWith("TUILE:")) {
+            if (pointsRails > 0) {
+                // Poser un rail sur la tuile du plateau
+                int tuile_index = Integer.parseInt(choix.split("TUILE:")[1]);
+                Tuile tuile = jeu.getTuile(tuile_index);
+                if (tuile instanceof TuileMer || tuile.hasRail(this)) {
+                    log("Impossible de poser un rail sur cette tuile.");
+                    return;
+                }
+
+                // Déterminer le coût supplémentaire
+                int cout_supp = 0;
+                if(surcoutRail) {
+                    if (tuile instanceof TuileTerrain) {
+                        TypeTerrain type = ((TuileTerrain) tuile).getTypeTerrain();
+                        if (type == TypeTerrain.FLEUVE) {
+                            if (surcoutRiviere)
+                                cout_supp = 1;
+                        } else if (type == TypeTerrain.MONTAGNE) {
+                            if (surcoutMontagne)
+                                cout_supp = 2;
+                        }
+                    } else if (tuile instanceof TuileVille) {
+                        if (surcoutVille)
+                            cout_supp = 1 + tuile.getNbGares();
+                    } else if (tuile instanceof TuileEtoile)
+                        cout_supp = ((TuileEtoile) tuile).getValeur();
+                    // Ajouter le coût supplémentaire des rails des autres joueurs
+                    if (surcoutAdversaires)
+                        cout_supp += tuile.getRailsSize();
+                }
+
+                // Placer une gare dans une tuile si possible
+                if (argent >= cout_supp) {
+                    if (recevoirFerraille && tuile.getRailsSize() > 0 && surcoutAdversaires)
+                        main.add(jeu.prendreDansLaReserve("Ferraille"));
+                    if (bonusFerronnerie)
+                        argent += 2;
+                    tuile.ajouterRail(this);
+                    pointsRails--;
+                    nbJetonsRails--;
+                    log("Gare posé.");
+                } else log("Vous n'avez pas assez d'argent nécessaire pour poser un rail sur cette tuile.");
+            } else log("Vous n'avez pas de point de rail nécessaire pour cette tuile.");
+        } else if (choix.isEmpty()) {
+            // terminer le tour
+            finTour = true;
+        } else {
+            // jouer une carte de la main
+            Carte carte = main.retirer(choix);
+            log("Joue " + carte); // affichage dans le log
+            cartesEnJeu.add(carte); // mettre la carte en jeu
+            carte.jouer(this);  // exécuter l'action de la carte
+        }
     }
 
     /**
@@ -528,11 +562,31 @@ public class Joueur {
         return joiner.toString();
     }
 
+    /**
+     * Renvoie la liste de toutes les cartes possédées par le joueur
+     * <p>
+     * Renvoie une liste contenant les cartes de la pioche, de la main et de la défausse du joueur
+     *
+     * @return une liste de toutes les cartes possédées par le joueur
+     */
     public List<Carte> getCartes() {
         List<Carte> cartes = new ArrayList<>();
         cartes.addAll(pioche);
         cartes.addAll(main);
         cartes.addAll(defausse);
+        return cartes;
+    }
+
+    /**
+     * Renvoie la liste de toutes les cartes possédées par le joueur
+     * <p>
+     * Renvoie une liste contenant les cartes de la pioche, de la main, de la défausse, des cartes en jeu et des cartes reçues du joueur
+     * @return
+     */
+    public List<Carte> getCartesComplet() {
+        List<Carte> cartes = getCartes();
+        cartes.addAll(cartesEnJeu);
+        cartes.addAll(cartesRecues);
         return cartes;
     }
 
@@ -608,6 +662,18 @@ public class Joueur {
         this.surcoutAdversaires = surcoutAdversaires;
     }
 
+    public void setSurcoutRiviere(boolean surcoutRiviere) {
+        this.surcoutRiviere = surcoutRiviere;
+    }
+
+    public void setSurcoutMontagne(boolean surcoutMontagne) {
+        this.surcoutMontagne = surcoutMontagne;
+    }
+
+    public void setSurcoutVille(boolean surcoutVille) {
+        this.surcoutVille = surcoutVille;
+    }
+
     public boolean getRecevoirFerraille() {
         return recevoirFerraille;
     }
@@ -618,5 +684,9 @@ public class Joueur {
 
     public void setBonusFerronnerie(boolean bonusFerronnerie) {
         this.bonusFerronnerie = bonusFerronnerie;
+    }
+
+    public void setBonusTrainMatinal(boolean bonusTrainMatinal) {
+        this.bonusTrainMatinal = bonusTrainMatinal;
     }
 }

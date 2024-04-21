@@ -30,8 +30,8 @@ public class Gare extends Carte {
     }
 
     @Override
-    public void jouer(Joueur joueur, String nomCarte) {
-        TuileVille tuile = (TuileVille) joueur.getJeu().getTuile(Integer.parseInt(nomCarte.split("TUILE:")[1]));
+    public void jouer(Joueur joueur, String choix) {
+        TuileVille tuile = (TuileVille) joueur.getJeu().getTuile(Integer.parseInt(choix.split("TUILE:")[1]));
         if(!tuile.hasRail(joueur))
             tuile.ajouterRail(joueur);
         tuile.ajouterGare();

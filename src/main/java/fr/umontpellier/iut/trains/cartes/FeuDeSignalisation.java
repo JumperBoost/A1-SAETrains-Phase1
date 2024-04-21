@@ -20,9 +20,9 @@ public class FeuDeSignalisation extends Carte {
     }
 
     @Override
-    public void jouer(Joueur joueur, String nomCarte) {
+    public void jouer(Joueur joueur, String choix) {
         Carte carte = joueur.piocher();
-        if(nomCarte.equals("oui"))
+        if(choix.equals("oui"))
             joueur.getDefausse().add(carte);
         else joueur.getPioche().add(0, carte);
         joueur.setCarteAction(null);

@@ -66,6 +66,14 @@ public abstract class Carte {
         return nom;
     }
 
+    public int getValeur() {
+        return valeur;
+    }
+
+    public int getCout() {
+        return cout;
+    }
+
     public Type getFirstType() {
         return typesCarte.get(0);
     }
@@ -85,11 +93,8 @@ public abstract class Carte {
      * @param joueur le joueur qui joue la carte
      */
     public void jouer(Joueur joueur) {
-        // On applique les actions par défaut seulement si aucune carte action n'est en cours d'utilisation
-        if(joueur.getCarteAction() == null) {
-            joueur.utiliserCarte(this);
-            joueur.setArgent(joueur.getArgent() + valeur);
-        }
+        joueur.utiliserCarte(this);
+        joueur.setArgent(joueur.getArgent() + valeur);
     }
 
     /**
@@ -97,9 +102,9 @@ public abstract class Carte {
      * Toutes les cartes ont une méthode jouer, mais elle ne fait rien par défaut.
      *
      * @param joueur le joueur qui joue la carte
-     * @param nomCarte le nom de la carte utilisée pour l'action
+     * @param choix le choix du joueur utilisé pour l'action
      */
-    public void jouer(Joueur joueur, String nomCarte) {
+    public void jouer(Joueur joueur, String choix) {
 
     }
 
@@ -116,7 +121,7 @@ public abstract class Carte {
      * Cette fonction permet de vérifier si le joueur peut acheter la carte courante
      */
     public boolean peutAcheter(Joueur joueur) {
-        return joueur.getArgent() >= cout;
+        return cout != 0 && joueur.getArgent() >= cout;
     }
 
     @Override

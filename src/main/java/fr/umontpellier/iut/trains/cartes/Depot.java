@@ -7,12 +7,12 @@ public class Depot extends Carte {
 
     public Depot() {
         super("Dépôt", 1, 3, Type.ACTION, "Piochez 2 cartes. Défaussez 2 cartes de votre main.");
-        nbCartes = 2;
     }
 
     @Override
     public void jouer(Joueur joueur) {
         super.jouer(joueur);
+        nbCartes = Math.min(2, joueur.getPioche().size() + joueur.getDefausse().size());
         joueur.getMain().addAll(joueur.piocher(2));
         joueur.setCarteAction(this);
         joueur.setPeutPasser(false);
@@ -21,20 +21,13 @@ public class Depot extends Carte {
     }
 
     @Override
-    public void jouer(Joueur joueur, String nomCarte) {
-        Carte carte = joueur.getMain().retirer(nomCarte);
+    public void jouer(Joueur joueur, String choix) {
+        Carte carte = joueur.getMain().retirer(choix);
         joueur.getDefausse().add(carte);
-        joueur.retirerChoixPossibleAction(nomCarte);
+        joueur.retirerChoixPossibleAction(choix);
         if(--nbCartes == 0) {
             joueur.setCarteAction(null);
             joueur.setPeutPasser(true);
         }
-    }
-
-    // PRÉ-REQUIS : Au moins 2 cartes quelconques dans la main et au moins 2 cartes dans la pioche et/ou la défausse du joueur
-    @Override
-    public boolean peutJouer(Joueur joueur) {
-        return super.peutJouer(joueur) && joueur.getMain().size() >= 2
-                && joueur.getPioche().size() + joueur.getDefausse().size() >= 2;
     }
 }
