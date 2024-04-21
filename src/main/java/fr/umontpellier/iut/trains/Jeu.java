@@ -212,8 +212,18 @@ public class Jeu implements Runnable {
      */
     public boolean estFini() {
         if (nbJetonsGare==0){return true;}
-        // À FAIRE: réécrire cette méthode
+        int nbvide = 0;
+        for (ListeDeCartes pile : reserve) {
+            if (pile.isEmpty()) {
+                nbvide += 1;
+            }
+            if (nbvide==4){return true;}
+        }
+        // Dernière vérification ; Dépend du nombre de jetons rails posé par les joueurs
+        if(false){}
+        // À FAIRE : réécrire cette méthode
         return false;
+        }
     }
 
     /**
