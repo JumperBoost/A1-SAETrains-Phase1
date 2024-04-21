@@ -193,6 +193,14 @@ public class Jeu implements Runnable {
         // initialisation (chaque joueur choisit une position de départ)
         // À FAIRE: compléter la partie initialisation
 
+        //Dans le cas où on doit tous les faire commencer sur la même case, la 0 :
+        for (int nbJoueur=0; nbJoueur<joueurs.size(); nbJoueur++) {
+            tuiles.get(0).ajouterRail(joueurCourant);
+            passeAuJoueurSuivant();
+        }
+
+        //Dans le cas où chaque joueur doit choisir sa position de départ : (pas encore fait)
+
         // tours des joueurs jusqu'à une condition de fin
         while (!estFini()) {
             joueurCourant.jouerTour();
