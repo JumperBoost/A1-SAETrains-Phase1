@@ -634,6 +634,10 @@ public class Joueur {
         this.argent = argent;
     }
 
+    public int getNbJetonsRails(){
+        return nbJetonsRails;
+    }
+
     public Jeu getJeu() {
         return jeu;
     }
