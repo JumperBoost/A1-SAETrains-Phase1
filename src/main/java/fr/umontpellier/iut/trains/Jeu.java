@@ -16,6 +16,7 @@ import fr.umontpellier.iut.trains.cartes.FabriqueListeDeCartes;
 import fr.umontpellier.iut.trains.cartes.ListeDeCartes;
 import fr.umontpellier.iut.trains.plateau.Plateau;
 import fr.umontpellier.iut.trains.plateau.Tuile;
+import fr.umontpellier.iut.trains.plateau.TuileMer;
 
 public class Jeu implements Runnable {
     /**
@@ -213,6 +214,24 @@ public class Jeu implements Runnable {
         // initialisation (chaque joueur choisit une position de départ)
         // À FAIRE: compléter la partie initialisation
 
+        //Dans le cas où chaque joueur doit choisir sa position de départ : (pas encore fait)
+
+        String choix;
+        for (int nbJoueur=0; nbJoueur<joueurs.size(); nbJoueur++) {
+            List<String> choixPossibles = new ArrayList<>();
+            for(int i = 0; i < 80; i++) {
+                // Ajoute les positions des tuiles possibles à jouer
+                choixPossibles.add("TUILE:" + i);
+            }
+            choix = joueurCourant.choisir(String.format("Le joueur %s doit choisir une case de départ"), choixPossibles, null, false);
+            if(choix.startsWith("TUILE:")) {
+                // Poser un rail sur la tuile du plateau
+                int tuile_index = Integer.parseInt(choix.split("TUILE:")[1]);
+                Tuile tuile = this.getTuile(tuile_index);
+            }
+            passeAuJoueurSuivant();
+        }
+
         // tours des joueurs jusqu'à une condition de fin
         while (!estFini()) {
             joueurCourant.jouerTour();
@@ -231,7 +250,31 @@ public class Jeu implements Runnable {
      * @return {@code true} si la partie est finie, {@code false} sinon
      */
     public boolean estFini() {
-        // À FAIRE: réécrire cette méthode
+        if (nbJetonsGare==0){return true;}
+        int nbvide = 0;
+
+        for (int i=0; i<reserve.size(); i++) {
+            if (reserve.get(i).isEmpty()) {
+                nbvide += 1;
+            }
+            if (nbvide>=4) {
+                return true;
+            }
+        }
+        /*
+        for (Map pile : reserve) {
+            if (pile.isEmpty()) {
+                nbvide += 1;
+            }
+            if (nbvide==4){return true;}
+        }*/
+        // Dernière vérification ; Dépend du nombre de jetons rails posé par les joueurs
+        /*for (Joueur j : joueurs){
+            if (j.getNbJetonsRails()==0){
+                return true;
+            }
+        }*/
+        // À FAIRE : réécrire cette méthode
         return false;
     }
 
