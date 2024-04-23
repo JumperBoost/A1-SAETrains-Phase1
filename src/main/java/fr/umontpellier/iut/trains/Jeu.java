@@ -16,6 +16,7 @@ import fr.umontpellier.iut.trains.cartes.FabriqueListeDeCartes;
 import fr.umontpellier.iut.trains.cartes.ListeDeCartes;
 import fr.umontpellier.iut.trains.plateau.Plateau;
 import fr.umontpellier.iut.trains.plateau.Tuile;
+import fr.umontpellier.iut.trains.plateau.TuileMer;
 
 public class Jeu implements Runnable {
     /**
@@ -195,8 +196,19 @@ public class Jeu implements Runnable {
 
         //Dans le cas où chaque joueur doit choisir sa position de départ : (pas encore fait)
 
+        String choix;
         for (int nbJoueur=0; nbJoueur<joueurs.size(); nbJoueur++) {
-            tuiles.get(0).ajouterRail(joueurCourant);
+            List<String> choixPossibles = new ArrayList<>();
+            for(int i = 0; i < 80; i++) {
+                // Ajoute les positions des tuiles possibles à jouer
+                choixPossibles.add("TUILE:" + i);
+            }
+            choix = joueurCourant.choisir(String.format("Le joueur %s doit choisir une case de départ"), choixPossibles, null, false);
+            if(choix.startsWith("TUILE:")) {
+                // Poser un rail sur la tuile du plateau
+                int tuile_index = Integer.parseInt(choix.split("TUILE:")[1]);
+                Tuile tuile = this.getTuile(tuile_index);
+            }
             passeAuJoueurSuivant();
         }
 
@@ -237,11 +249,11 @@ public class Jeu implements Runnable {
             if (nbvide==4){return true;}
         }*/
         // Dernière vérification ; Dépend du nombre de jetons rails posé par les joueurs
-        for (Joueur j : joueurs){
+        /*for (Joueur j : joueurs){
             if (j.getNbJetonsRails()==0){
                 return true;
             }
-        }
+        }*/
         // À FAIRE : réécrire cette méthode
         return false;
     }
