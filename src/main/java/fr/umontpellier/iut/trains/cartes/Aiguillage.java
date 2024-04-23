@@ -9,6 +9,7 @@ public class Aiguillage extends Carte {
 
     @Override
     public void jouer(Joueur joueur){
-        joueur.piocher(2);
+        super.jouer(joueur);
+        joueur.getMain().addAll(joueur.piocher(2));
     }
 }

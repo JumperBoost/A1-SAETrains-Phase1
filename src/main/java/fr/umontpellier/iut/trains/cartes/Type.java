@@ -6,7 +6,7 @@ public enum Type {
     GARE("gare", "violet"),
     ACTION("action", "rouge"),
     VICTOIRE("victoire", "jaune"),
-    FERAILLE("feraille", "gris");
+    FERRAILLE("ferraille", "gris");
 
     private final String type;
     private final String couleur;

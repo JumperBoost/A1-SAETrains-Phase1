@@ -66,6 +66,14 @@ public abstract class Carte {
         return nom;
     }
 
+    public int getValeur() {
+        return valeur;
+    }
+
+    public int getCout() {
+        return cout;
+    }
+
     public Type getFirstType() {
         return typesCarte.get(0);
     }
@@ -80,25 +88,49 @@ public abstract class Carte {
 
     /**
      * Cette fonction est exécutée lorsqu'un joueur joue la carte pendant son tour.
-     * Toutes les cartes ont une méthode jouer, mais elle ne fait rien par défaut.
+     * Toutes les cartes ont une méthode jouer, la carte est utilisée par défaut et l'argent est attribuée au joueur.
      * 
      * @param joueur le joueur qui joue la carte
      */
     public void jouer(Joueur joueur) {
+        joueur.utiliserCarte(this);
+        joueur.setArgent(joueur.getArgent() + valeur);
     }
 
-    /*
-     * Cette fonction permet de vérifier si le joueur peut jouer la carte courante
+    /**
+     * Cette fonction est exécutée lorsqu'un joueur joue l'effet de la carte Action pendant son tour.
+     * Toutes les cartes ont une méthode jouer, mais elle ne fait rien par défaut.
+     *
+     * @param joueur le joueur qui joue la carte
+     * @param choix le choix du joueur utilisé pour l'action
      */
-    public boolean peutJouer() {
-        return !(typesCarte.contains(Type.VICTOIRE) || typesCarte.contains(Type.FERAILLE));
+    public void jouer(Joueur joueur, String choix) {
+
     }
 
-    /*
+    /**
+     * Cette fonction est exécutée lorsqu'un joueur achète la carte pendant son tour.
+     * Toutes les cartes ont une méthode acheter, et l'argent est retirée au joueur par défaut.
+     * @param joueur le joueur qui achète la carte
+     */
+    public void acheter(Joueur joueur) {
+        joueur.setArgent(joueur.getArgent() - cout);
+    }
+
+    /**
+     * Cette fonction permet de vérifier si le joueur peut jouer la carte courante
+     *
+     * @param joueur Le joueur concerné
+     */
+    public boolean peutJouer(Joueur joueur) {
+        return !(typesCarte.contains(Type.VICTOIRE) || typesCarte.contains(Type.FERRAILLE));
+    }
+
+    /**
      * Cette fonction permet de vérifier si le joueur peut acheter la carte courante
      */
     public boolean peutAcheter(Joueur joueur) {
-        return joueur.getArgent() >= cout;
+        return cout != 0 && joueur.getArgent() >= cout;
     }
 
     @Override

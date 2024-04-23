@@ -129,6 +129,10 @@ public class Jeu implements Runnable {
         return reserve;
     }
 
+    public ListeDeCartes getCartesEcartees() {
+        return cartesEcartees;
+    }
+
     /**
      * Renvoie un ensemble de tous les noms des cartes en jeu.
      * 
@@ -140,6 +144,22 @@ public class Jeu implements Runnable {
         Set<String> noms = new HashSet<>(reserve.keySet());
         noms.add("Train omnibus");
         return noms;
+    }
+
+    /**
+     * Récupère le nombre de jetons Gare restant
+     *
+     * @return le nombre de jetons Gare restant
+     */
+    public int getNbJetonsGare() {
+        return nbJetonsGare;
+    }
+
+    /**
+     * Décrémente le nombre de jetons Gare restant de 1
+     */
+    public void desincrementerNbJetonsGare() {
+        nbJetonsGare--;
     }
 
     /**

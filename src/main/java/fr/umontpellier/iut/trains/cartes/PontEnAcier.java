@@ -1,7 +1,15 @@
 package fr.umontpellier.iut.trains.cartes;
 
-public class PontEnAcier extends Carte {
+import fr.umontpellier.iut.trains.Joueur;
+
+public class PontEnAcier extends CarteRail {
     public PontEnAcier() {
-        super("Pont en acier", 0, 4, Type.RAIL, "Posez un Rail.\nRécupérez une Ferraille.\nAucun surcout pour poser des rails sur des rivières");
+        super("Pont en acier", 0, 4, Type.RAIL, "Gagnez un point de rail.\nRécupérez une Férraille.\nAucun surcout pour poser des rails sur des rivières.");
+    }
+
+    @Override
+    public void jouer(Joueur joueur) {
+        super.jouer(joueur);
+        joueur.setSurcoutRiviere(false);
     }
 }

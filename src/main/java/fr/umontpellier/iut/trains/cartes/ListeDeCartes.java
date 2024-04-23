@@ -31,12 +31,10 @@ public class ListeDeCartes extends ArrayList<Carte> {
      * @return la carte retirée si elle a été trouvée, {@code null} sinon
      */
     public Carte retirer(String nomCarte) {
-        for (Carte c : this)
-            if (c.getNom().equals(nomCarte)) {
-                remove(c);
-                return c;
-            }
-        return null;
+        Carte carte = getCarte(nomCarte);
+        if(carte != null)
+            remove(carte);
+        return carte;
     }
 
     /**
@@ -64,6 +62,20 @@ public class ListeDeCartes extends ArrayList<Carte> {
         int total = 0;
         for (Carte c : this)
             if (c.getNom().equals(nomCarte))
+                total += 1;
+        return total;
+    }
+
+    /**
+     * Renvoie le nombre de cartes dans la liste ayant le nom passé en argument
+     *
+     * @param typeCarte le type de la carte à compter
+     * @return un entier indiquant le nombre de cartes ayant le type recherché
+     */
+    public int count(Type typeCarte) {
+        int total = 0;
+        for (Carte c : this)
+            if (c.getTypesCarte().contains(typeCarte))
                 total += 1;
         return total;
     }
