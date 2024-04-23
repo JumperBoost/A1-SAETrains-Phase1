@@ -1,0 +1,16 @@
+image: maven:3.8.5-openjdk-17
+
+stages:
+  - build
+  - test
+
+compilation:
+  stage: build
+  script:
+    - echo "Compilation du projet"
+    - mvn compile
+testing:
+  stage: test
+  script:
+    - echo "Vérification si les tests actifs passent"
+    - mvn test
