@@ -193,13 +193,12 @@ public class Jeu implements Runnable {
         // initialisation (chaque joueur choisit une position de départ)
         // À FAIRE: compléter la partie initialisation
 
-        //Dans le cas où on doit tous les faire commencer sur la même case, la 0 :
+        //Dans le cas où chaque joueur doit choisir sa position de départ : (pas encore fait)
+
         for (int nbJoueur=0; nbJoueur<joueurs.size(); nbJoueur++) {
             tuiles.get(0).ajouterRail(joueurCourant);
             passeAuJoueurSuivant();
         }
-
-        //Dans le cas où chaque joueur doit choisir sa position de départ : (pas encore fait)
 
         // tours des joueurs jusqu'à une condition de fin
         while (!estFini()) {
@@ -238,7 +237,11 @@ public class Jeu implements Runnable {
             if (nbvide==4){return true;}
         }*/
         // Dernière vérification ; Dépend du nombre de jetons rails posé par les joueurs
-        if(false){}
+        for (Joueur j : joueurs){
+            if (j.getNbJetonsRails()==0){
+                return true;
+            }
+        }
         // À FAIRE : réécrire cette méthode
         return false;
     }
