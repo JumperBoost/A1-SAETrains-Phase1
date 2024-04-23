@@ -11,10 +11,12 @@ public class AtelierDeMaintenance extends Carte {
     public void jouer(Joueur joueur) {
         super.jouer(joueur);
         joueur.setCarteAction(this);
-        joueur.setPeutPasser(false);
         for(Carte carte : joueur.getMain())
             if(carte.getFirstType() == Type.TRAIN)
                 joueur.ajouterChoixPossibleAction(carte.getNom());
+        if(joueur.getNbChoixPossiblesAction() > 0)
+            joueur.setPeutPasser(false);
+        else joueur.setCarteAction(null);
     }
 
     @Override
@@ -23,11 +25,5 @@ public class AtelierDeMaintenance extends Carte {
             joueur.getCartesRecues().add(joueur.getJeu().getReserve().get(choix).retirer(choix));
         joueur.setCarteAction(null);
         joueur.setPeutPasser(true);
-    }
-
-    // PRÉ-REQUIS : Au moins une carte TRAIN dans la main du joueur
-    @Override
-    public boolean peutJouer(Joueur joueur) {
-        return super.peutJouer(joueur) && joueur.getMain().count(Type.TRAIN) > 0;
     }
 }

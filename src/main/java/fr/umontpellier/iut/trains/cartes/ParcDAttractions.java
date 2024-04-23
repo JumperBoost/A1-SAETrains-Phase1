@@ -11,10 +11,12 @@ public class ParcDAttractions extends Carte {
     public void jouer(Joueur joueur) {
         super.jouer(joueur);
         joueur.setCarteAction(this);
-        joueur.setPeutPasser(false);
         for(Carte carte : joueur.getCartesEnJeu())
             if(carte.getFirstType() == Type.TRAIN)
                 joueur.ajouterChoixPossibleAction(carte.getNom());
+        if(joueur.getNbChoixPossiblesAction() > 0)
+            joueur.setPeutPasser(false);
+        else joueur.setCarteAction(null);
     }
 
     @Override
@@ -23,11 +25,5 @@ public class ParcDAttractions extends Carte {
         joueur.setArgent(joueur.getArgent() + carte.getValeur());
         joueur.setCarteAction(null);
         joueur.setPeutPasser(true);
-    }
-
-    // PRÉ-REQUIS : Au moins une carte Train en jeu
-    @Override
-    public boolean peutJouer(Joueur joueur) {
-        return super.peutJouer(joueur) && joueur.getCartesEnJeu().count(Type.TRAIN) > 0;
     }
 }

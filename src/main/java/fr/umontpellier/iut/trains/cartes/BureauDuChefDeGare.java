@@ -30,10 +30,4 @@ public class BureauDuChefDeGare extends Carte {
             joueur.setPeutPasser(true);
         }
     }
-
-    // PRÉ-REQUIS : Au moins deux cartes ACTION dans la main du joueur
-    @Override
-    public boolean peutJouer(Joueur joueur) {
-        return super.peutJouer(joueur) && joueur.getMain().count(Type.ACTION) >= 2;
-    }
 }

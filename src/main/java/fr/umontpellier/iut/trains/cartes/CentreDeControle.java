@@ -17,6 +17,8 @@ public class CentreDeControle extends Carte {
             joueur.ajouterChoixPossibleAction(carte.getNom());
         for(String nomCarte : joueur.getJeu().getListeNomsCartes())
             joueur.ajouterChoixPossibleAction(nomCarte);
+        for(Carte carte : joueur.getJeu().getCartesEcartees())
+            joueur.ajouterChoixPossibleAction(carte.getNom());
     }
 
     @Override
@@ -25,11 +27,5 @@ public class CentreDeControle extends Carte {
             joueur.getMain().add(joueur.piocher());
         joueur.setCarteAction(null);
         joueur.setPeutPasser(true);
-    }
-
-    // PRÉ-REQUIS : Au moins une carte quelconque dans la pioche ou la défausse du joueur
-    @Override
-    public boolean peutJouer(Joueur joueur) {
-        return super.peutJouer(joueur) && joueur.getPioche().size() + joueur.getDefausse().size() > 0;
     }
 }

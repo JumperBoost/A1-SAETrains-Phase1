@@ -29,6 +29,8 @@ public class CentreDeRenseignements extends Carte {
         cartes.addAll(joueur.piocher(nbCartes));
         for(Carte carte : cartes)
             joueur.ajouterChoixPossibleAction(carte.getNom());
+        if(joueur.getNbChoixPossiblesAction() == 0)
+            joueur.setCarteAction(null);
     }
 
     @Override
@@ -52,11 +54,5 @@ public class CentreDeRenseignements extends Carte {
                 joueur.getPioche().add(0, cartes.retirer(nomCarteO));
             joueur.setPeutPasser(true);
         }
-    }
-
-    // PRÉ-REQUIS : Au moins une carte dans la pioche ou la défausse du joueur
-    @Override
-    public boolean peutJouer(Joueur joueur) {
-        return super.peutJouer(joueur) && (joueur.getPioche().size() + joueur.getDefausse().size()) > 0;
     }
 }
