@@ -28,6 +28,6 @@ public class ParcDAttractions extends Carte {
     // PRÉ-REQUIS : Au moins une carte Train en jeu
     @Override
     public boolean peutJouer(Joueur joueur) {
-        return super.peutJouer(joueur) && joueur.getCartesEnJeu().stream().anyMatch(carte -> carte.getFirstType() == Type.TRAIN);
+        return super.peutJouer(joueur) && joueur.getCartesEnJeu().count(Type.TRAIN) > 0;
     }
 }

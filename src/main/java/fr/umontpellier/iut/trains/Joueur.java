@@ -115,16 +115,6 @@ public class Joueur {
         choixPossiblesAction = new ArrayList<>();
         peutPasser = true;
 
-        // Initialisation des attributs nécessaires pour gérer les effets des cartes
-        surcoutAdversaires = true;
-        surcoutRiviere = true;
-        surcoutMontagne = true;
-        surcoutVille = true;
-        surcoutRail = true;
-        recevoirFerraille = true;
-        bonusFerronnerie = false;
-        bonusTrainMatinal = false;
-
         // créer 7 Train omnibus (non disponibles dans la réserve)
         pioche.addAll(FabriqueListeDeCartes.creerListeDeCartes("Train omnibus", 7));
         // prendre 2 Pose de rails de la réserve
@@ -185,6 +175,11 @@ public class Joueur {
         return nb;
     }
 
+    /**
+     * Donne des points de victoire bonus au joueur
+     *
+     * @param pv nombre de points de victoire bonus à donner
+     */
     public void donnePvBonus(int pv){
         pvBonus += pv;
     }
@@ -271,6 +266,10 @@ public class Joueur {
         this.choixPossiblesAction.remove(choixPossible);
     }
 
+    public int getNbChoixPossiblesAction() {
+        return this.choixPossiblesAction.size();
+    }
+
     public void viderChoixPossiblesActions() {
         this.choixPossiblesAction.clear();
     }
@@ -332,7 +331,19 @@ public class Joueur {
         // À FAIRE: compléter l'initialisation du tour si nécessaire (mais possiblement
         // rien de spécial à faire)
 
+        // Réinitialiser les attributs spécifiques au tour
         finTour = false;
+        pointsRails = 0;
+        // Réinitialisation des attributs spécifiques nécessaires pour gérer les effets des cartes
+        surcoutAdversaires = true;
+        surcoutRiviere = true;
+        surcoutMontagne = true;
+        surcoutVille = true;
+        surcoutRail = true;
+        recevoirFerraille = true;
+        bonusFerronnerie = false;
+        bonusTrainMatinal = false;
+
         // Boucle principale
         while (!finTour) {
             List<String> choixPossibles = new ArrayList<>();
@@ -349,7 +360,7 @@ public class Joueur {
                     if (!carte_reserve.getValue().isEmpty() && carte_reserve.getValue().get(0).peutAcheter(this))
                         choixPossibles.add("ACHAT:" + carte_reserve.getKey());
                 }
-                for (int i = 0; i < 80; i++)
+                for (int i = 0; i < jeu.getTuiles().size(); i++)
                     // Ajoute les positions des tuiles possibles à jouer
                     choixPossibles.add("TUILE:" + i);
 
@@ -375,18 +386,6 @@ public class Joueur {
         cartesRecues.clear();
         cartesEnJeu.clear();
         main.addAll(piocher(5));
-
-        // Réinitialiser les attributs spécifiques au tour
-        pointsRails = 0;
-        // Réinitialisation des attributs spécifiques nécessaires pour gérer les effets des cartes
-        surcoutAdversaires = true;
-        surcoutRiviere = true;
-        surcoutMontagne = true;
-        surcoutVille = true;
-        surcoutRail = true;
-        recevoirFerraille = true;
-        bonusFerronnerie = false;
-        bonusTrainMatinal = false;
     }
 
     public void executerChoix(String choix) {
@@ -397,7 +396,7 @@ public class Joueur {
             if (carte != null) {
                 log("Reçoit " + carte); // affichage dans le log
                 cartesRecues.add(carte);
-                argent -= carte.getValeur();
+                carte.acheter(this);
             }
         } else if (choix.startsWith("TUILE:")) {
             if (pointsRails > 0) {
@@ -574,17 +573,6 @@ public class Joueur {
         cartes.addAll(pioche);
         cartes.addAll(main);
         cartes.addAll(defausse);
-        return cartes;
-    }
-
-    /**
-     * Renvoie la liste de toutes les cartes possédées par le joueur
-     * <p>
-     * Renvoie une liste contenant les cartes de la pioche, de la main, de la défausse, des cartes en jeu et des cartes reçues du joueur
-     * @return
-     */
-    public List<Carte> getCartesComplet() {
-        List<Carte> cartes = getCartes();
         cartes.addAll(cartesEnJeu);
         cartes.addAll(cartesRecues);
         return cartes;

@@ -147,6 +147,22 @@ public class Jeu implements Runnable {
     }
 
     /**
+     * Récupère le nombre de jetons Gare restant
+     *
+     * @return le nombre de jetons Gare restant
+     */
+    public int getNbJetonsGare() {
+        return nbJetonsGare;
+    }
+
+    /**
+     * Décrémente le nombre de jetons Gare restant de 1
+     */
+    public void desincrementerNbJetonsGare() {
+        nbJetonsGare--;
+    }
+
+    /**
      * Construit les piles de réserve pour les cartes communes
      */
     private void creerCartesCommunes() {

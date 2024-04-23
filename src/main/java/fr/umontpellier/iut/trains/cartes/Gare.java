@@ -12,29 +12,30 @@ public class Gare extends Carte {
     @Override
     public void jouer(Joueur joueur) {
         super.jouer(joueur);
-        joueur.setCarteAction(this);
         joueur.getCartesRecues().add(joueur.getJeu().prendreDansLaReserve("Ferraille"));
-        // Déterminer la liste des villes où le joueur peut ajouter une station
-        boolean tuileDispo = false;
-        for(Tuile tuile : joueur.getJeu().getTuiles()) {
-            if (tuile instanceof TuileVille && ((TuileVille) tuile).getNbGaresDispo() > 0) {
-                joueur.ajouterChoixPossibleAction("TUILE:" + joueur.getJeu().getTuiles().indexOf(tuile));
-                tuileDispo = true;
+        if(joueur.getJeu().getNbJetonsGare() > 0) {
+            joueur.setCarteAction(this);
+            // Déterminer la liste des villes où le joueur peut ajouter une station
+            boolean tuileDispo = false;
+            for (Tuile tuile : joueur.getJeu().getTuiles()) {
+                if (tuile instanceof TuileVille && ((TuileVille) tuile).getNbGaresDispo() > 0) {
+                    joueur.ajouterChoixPossibleAction("TUILE:" + joueur.getJeu().getTuiles().indexOf(tuile));
+                    tuileDispo = true;
+                }
             }
-        }
 
-        // Mettre l'action en attente d'une tuile à choisir (s'il y a des tuiles disponibles)
-        if(!tuileDispo)
-            joueur.setCarteAction(null);
-        else joueur.setPeutPasser(false);
+            // Mettre l'action en attente d'une tuile à choisir (s'il y a des tuiles disponibles)
+            if(!tuileDispo)
+                joueur.setCarteAction(null);
+            else joueur.setPeutPasser(false);
+        }
     }
 
     @Override
     public void jouer(Joueur joueur, String choix) {
         TuileVille tuile = (TuileVille) joueur.getJeu().getTuile(Integer.parseInt(choix.split("TUILE:")[1]));
-        if(!tuile.hasRail(joueur))
-            tuile.ajouterRail(joueur);
         tuile.ajouterGare();
+        joueur.getJeu().desincrementerNbJetonsGare();
         joueur.setCarteAction(null);
         joueur.setPeutPasser(true);
     }

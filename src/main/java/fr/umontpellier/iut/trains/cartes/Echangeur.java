@@ -11,7 +11,6 @@ public class Echangeur extends Carte {
     public void jouer(Joueur joueur) {
         super.jouer(joueur);
         joueur.setCarteAction(this);
-        joueur.setPeutPasser(false);
         for(Carte carte : joueur.getCartesEnJeu())
             if(carte.getFirstType() == Type.TRAIN)
                 joueur.ajouterChoixPossibleAction(carte.getNom());
@@ -19,14 +18,9 @@ public class Echangeur extends Carte {
 
     @Override
     public void jouer(Joueur joueur, String choix) {
-        joueur.getPioche().add(0, joueur.getCartesEnJeu().retirer(choix));
+        if(!choix.isEmpty())
+            joueur.getPioche().add(0, joueur.getCartesEnJeu().retirer(choix));
         joueur.setCarteAction(null);
         joueur.setPeutPasser(true);
-    }
-
-    // PRÉ-REQUIS : Au moins une carte dans les cartes en jeu du joueur
-    @Override
-    public boolean peutJouer(Joueur joueur) {
-        return super.peutJouer(joueur) && !joueur.getCartesEnJeu().isEmpty();
     }
 }

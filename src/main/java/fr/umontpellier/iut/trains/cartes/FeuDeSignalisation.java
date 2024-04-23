@@ -28,10 +28,4 @@ public class FeuDeSignalisation extends Carte {
         joueur.setCarteAction(null);
         joueur.setPeutPasser(true);
     }
-
-    // PRÉ-REQUIS : Au moins une carte dans la pioche ou la défausse
-    @Override
-    public boolean peutJouer(Joueur joueur) {
-        return super.peutJouer(joueur) && (joueur.getPioche().size() + joueur.getDefausse().size()) > 0;
-    }
 }

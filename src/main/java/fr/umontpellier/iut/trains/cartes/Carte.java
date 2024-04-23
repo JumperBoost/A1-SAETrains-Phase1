@@ -109,6 +109,15 @@ public abstract class Carte {
     }
 
     /**
+     * Cette fonction est exécutée lorsqu'un joueur achète la carte pendant son tour.
+     * Toutes les cartes ont une méthode acheter, et l'argent est retirée au joueur par défaut.
+     * @param joueur le joueur qui achète la carte
+     */
+    public void acheter(Joueur joueur) {
+        joueur.setArgent(joueur.getArgent() - cout);
+    }
+
+    /**
      * Cette fonction permet de vérifier si le joueur peut jouer la carte courante
      *
      * @param joueur Le joueur concerné

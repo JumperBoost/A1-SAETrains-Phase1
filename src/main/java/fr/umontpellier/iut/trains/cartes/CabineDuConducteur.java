@@ -3,6 +3,8 @@ package fr.umontpellier.iut.trains.cartes;
 import fr.umontpellier.iut.trains.Joueur;
 
 public class CabineDuConducteur extends Carte {
+    private int nbCartesDefaussees;
+
     public CabineDuConducteur() {
         super("Cabine du conducteur", 0, 2, Type.ACTION, "Défaussez autant de cartes que vous voulez de votre main. Piochez 1 carte par carte défaussée.");
     }
@@ -13,25 +15,20 @@ public class CabineDuConducteur extends Carte {
         joueur.setCarteAction(this);
         for(Carte carte : joueur.getMain())
             joueur.ajouterChoixPossibleAction(carte.getNom());
+        nbCartesDefaussees = 0;
     }
 
     @Override
     public void jouer(Joueur joueur, String choix) {
         if(choix.isEmpty()) {
+            joueur.getMain().addAll(joueur.piocher(nbCartesDefaussees));
             joueur.setCarteAction(null);
             return;
         }
 
         joueur.getDefausse().add(joueur.getMain().retirer(choix));
-        joueur.getMain().add(joueur.piocher());
-        // Vérifier si l'on peut toujours défausser
-        if(joueur.getMain().isEmpty())
-            joueur.viderChoixPossiblesActions();
-    }
-
-    // PRÉ-REQUIS : Au moins une carte dans la main et la pioche ou défausse
-    @Override
-    public boolean peutJouer(Joueur joueur) {
-        return super.peutJouer(joueur) && !joueur.getMain().isEmpty() && !(joueur.getPioche().isEmpty() && joueur.getDefausse().isEmpty());
+        if(joueur.getMain().count(choix) == 0)
+            joueur.retirerChoixPossibleAction(choix);
+        nbCartesDefaussees++;
     }
 }

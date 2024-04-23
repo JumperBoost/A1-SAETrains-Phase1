@@ -8,9 +8,8 @@ public class Appartement extends Carte {
     }
 
     @Override
-    public void jouer(Joueur joueur) {
-        super.jouer(joueur);
-        joueur.donnePvBonus(super.getPv());
+    public void acheter(Joueur joueur) {
+        super.acheter(joueur);
         joueur.getCartesRecues().add(joueur.getJeu().prendreDansLaReserve("Ferraille"));
     }
 }

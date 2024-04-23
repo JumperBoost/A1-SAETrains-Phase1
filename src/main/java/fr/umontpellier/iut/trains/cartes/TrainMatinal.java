@@ -30,7 +30,7 @@ public class TrainMatinal extends Carte {
             if (carte != null) {
                 // En attente du choix de l'emplacement par le joueur
                 carteAchete = carte;
-                joueur.setArgent(joueur.getArgent() - carte.getCout());
+                carte.acheter(joueur);
             }
         } else if(choix.equals("oui") && carteAchete != null) {
             // Placer la carte achetée dans la pioche
