@@ -238,10 +238,10 @@ public class Jeu implements Runnable {
             if (nbvide==4){return true;}
         }*/
         // Dernière vérification ; Dépend du nombre de jetons rails posé par les joueurs
-        if(false){}
+        //if(false){}
         // À FAIRE : réécrire cette méthode
         return false;
-        }
+
     }
 
     /**
