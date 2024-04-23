@@ -16,6 +16,7 @@ import fr.umontpellier.iut.trains.cartes.FabriqueListeDeCartes;
 import fr.umontpellier.iut.trains.cartes.ListeDeCartes;
 import fr.umontpellier.iut.trains.plateau.Plateau;
 import fr.umontpellier.iut.trains.plateau.Tuile;
+import fr.umontpellier.iut.trains.plateau.TuileEtoile;
 import fr.umontpellier.iut.trains.plateau.TuileMer;
 
 public class Jeu implements Runnable {
@@ -212,23 +213,19 @@ public class Jeu implements Runnable {
      */
     public void run() {
         // initialisation (chaque joueur choisit une position de départ)
-        // À FAIRE: compléter la partie initialisation
-
-        //Dans le cas où chaque joueur doit choisir sa position de départ : (pas encore fait)
-
         String choix;
-        for (int nbJoueur=0; nbJoueur<joueurs.size(); nbJoueur++) {
-            List<String> choixPossibles = new ArrayList<>();
-            for(int i = 0; i < 80; i++) {
-                // Ajoute les positions des tuiles possibles à jouer
-                choixPossibles.add("TUILE:" + i);
-            }
-            choix = joueurCourant.choisir(String.format("Le joueur %s doit choisir une case de départ"), choixPossibles, null, false);
-            if(choix.startsWith("TUILE:")) {
-                // Poser un rail sur la tuile du plateau
-                int tuile_index = Integer.parseInt(choix.split("TUILE:")[1]);
-                Tuile tuile = this.getTuile(tuile_index);
-            }
+        List<String> choixPossibles = new ArrayList<>();
+        for(Tuile tuile : tuiles)
+            if(!(tuile instanceof TuileMer || tuile instanceof TuileEtoile))
+                choixPossibles.add("TUILE:" + tuiles.indexOf(tuile));
+        for (int i = 0; i < joueurs.size(); i++) {
+            choix = joueurCourant.choisir(String.format("Le joueur %s doit choisir une case de départ", joueurCourant), choixPossibles, null, false);
+            // Poser un rail sur la tuile du plateau
+            int tuile_index = Integer.parseInt(choix.split("TUILE:")[1]);
+            Tuile tuile = this.getTuile(tuile_index);
+            tuile.ajouterRail(joueurCourant);
+            choixPossibles.remove(choix);
+
             passeAuJoueurSuivant();
         }
 
@@ -250,31 +247,20 @@ public class Jeu implements Runnable {
      * @return {@code true} si la partie est finie, {@code false} sinon
      */
     public boolean estFini() {
-        if (nbJetonsGare==0){return true;}
-        int nbvide = 0;
+        // 1er cas : Tous les jetons gares placés
+        if (nbJetonsGare == 0)
+            return true;
 
-        for (int i=0; i<reserve.size(); i++) {
-            if (reserve.get(i).isEmpty()) {
-                nbvide += 1;
-            }
-            if (nbvide>=4) {
+        // 2e cas : 4 piles de cartes de la réserve sont vides - à l'exception des Férraille
+        int nbReserveVide = 0;
+        for(Map.Entry<String, ListeDeCartes> cartes_reserve : reserve.entrySet())
+            if(cartes_reserve.getValue().isEmpty() && ++nbReserveVide == 4)
                 return true;
-            }
-        }
-        /*
-        for (Map pile : reserve) {
-            if (pile.isEmpty()) {
-                nbvide += 1;
-            }
-            if (nbvide==4){return true;}
-        }*/
-        // Dernière vérification ; Dépend du nombre de jetons rails posé par les joueurs
-        for (Joueur j : joueurs){
-            if (j.getNbJetonsRails()==0){
+
+        // 3e cas : Un des joueurs a utilisé tous ses jetons Rails
+        for(Joueur j : joueurs)
+            if(j.getNbJetonsRails() == 0)
                 return true;
-            }
-        }
-        // À FAIRE : réécrire cette méthode
         return false;
     }
 

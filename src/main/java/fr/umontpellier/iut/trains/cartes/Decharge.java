@@ -4,7 +4,7 @@ import fr.umontpellier.iut.trains.Joueur;
 
 public class Decharge extends Carte {
     public Decharge() {
-        super("Décharge", 0, 5, Type.ACTION, "Remettez toutes vos cartes férraille en main sur la pile de férraille.");
+        super("Décharge", 0, 2, Type.ACTION, "Remettez toutes vos cartes férraille en main sur la pile de férraille.");
     }
 
     @Override
