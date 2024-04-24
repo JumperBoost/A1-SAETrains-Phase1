@@ -84,6 +84,13 @@ public abstract class Tuile {
     }
 
     /**
+     * @return la liste des tuiles voisines, connectées à la tuile courante
+     */
+    public ArrayList<Tuile> getVoisines() {
+        return voisines;
+    }
+
+    /**
      * @return le nombre de jetons gare posés sur la tuile. Par défaut la fonction
      *         renvoie 0 car on ne peut pas poser de jeton gare sur une tuile
      *         quelconque.

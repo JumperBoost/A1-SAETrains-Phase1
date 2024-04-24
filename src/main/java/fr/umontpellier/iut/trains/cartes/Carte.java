@@ -123,7 +123,7 @@ public abstract class Carte {
      * @param joueur Le joueur concerné
      */
     public boolean peutJouer(Joueur joueur) {
-        return !(typesCarte.contains(Type.VICTOIRE) || typesCarte.contains(Type.FERRAILLE));
+        return !(typesCarte.contains(Type.VICTOIRE) || (typesCarte.contains(Type.FERRAILLE) && !joueur.getCartesEnJeu().isEmpty()));
     }
 
     /**

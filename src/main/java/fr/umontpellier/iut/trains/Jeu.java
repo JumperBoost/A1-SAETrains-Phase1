@@ -219,7 +219,7 @@ public class Jeu implements Runnable {
             if(!(tuile instanceof TuileMer || tuile instanceof TuileEtoile))
                 choixPossibles.add("TUILE:" + tuiles.indexOf(tuile));
         for (int i = 0; i < joueurs.size(); i++) {
-            choix = joueurCourant.choisir(String.format("Le joueur %s doit choisir une case de départ", joueurCourant), choixPossibles, null, false);
+            choix = joueurCourant.choisir(String.format("Le joueur %s doit choisir une case de départ", joueurCourant.getNom()), choixPossibles, null, false);
             // Poser un rail sur la tuile du plateau
             int tuile_index = Integer.parseInt(choix.split("TUILE:")[1]);
             Tuile tuile = this.getTuile(tuile_index);

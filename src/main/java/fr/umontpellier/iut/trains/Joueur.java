@@ -234,10 +234,8 @@ public class Joueur {
      * @param carte Une carte quelconque présent dans la main
      */
     public void utiliserCarte(Carte carte) {
-        if(main.contains(carte)) {
-            main.remove(carte);
-            cartesEnJeu.add(carte);
-        }
+        main.remove(carte);
+        cartesEnJeu.add(carte);
     }
 
     /**
@@ -349,9 +347,11 @@ public class Joueur {
                     if (!carte_reserve.getValue().isEmpty() && carte_reserve.getValue().get(0).peutAcheter(this))
                         choixPossibles.add("ACHAT:" + carte_reserve.getKey());
                 }
-                for (int i = 0; i < jeu.getTuiles().size(); i++)
-                    // Ajoute les positions des tuiles possibles à jouer
-                    choixPossibles.add("TUILE:" + i);
+                for(Tuile tuile : jeu.getTuiles())
+                    if(tuile.hasRail(this))
+                        for(Tuile voisin : tuile.getVoisines())
+                            if(!(voisin instanceof TuileMer || voisin instanceof TuileEtoile) && !voisin.hasRail(this))
+                                choixPossibles.add("TUILE:" + jeu.getTuiles().indexOf(voisin));
 
                 // Ajoute les choix possibles d'une action Action passive
                 if(bonusTrainMatinal)
@@ -456,7 +456,6 @@ public class Joueur {
             // jouer une carte de la main
             Carte carte = main.retirer(choix);
             log("Joue " + carte); // affichage dans le log
-            cartesEnJeu.add(carte); // mettre la carte en jeu
             carte.jouer(this);  // exécuter l'action de la carte
         }
     }
@@ -631,6 +630,10 @@ public class Joueur {
                 Map.entry("cartesRecues", cartesRecues.dataMap()),
                 Map.entry("pioche", pioche.dataMap()),
                 Map.entry("actif", jeu.getJoueurCourant() == this));
+    }
+
+    public void setFinTour(boolean finTour) {
+        this.finTour = finTour;
     }
 
     public int getArgent() {
