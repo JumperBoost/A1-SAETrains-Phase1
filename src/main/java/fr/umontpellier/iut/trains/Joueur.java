@@ -115,6 +115,8 @@ public class Joueur {
         choixPossiblesAction = new ArrayList<>();
         peutPasser = true;
 
+        reinitialiserTour();
+
         // créer 7 Train omnibus (non disponibles dans la réserve)
         pioche.addAll(FabriqueListeDeCartes.creerListeDeCartes("Train omnibus", 7));
         // prendre 2 Pose de rails de la réserve
@@ -331,19 +333,6 @@ public class Joueur {
         // À FAIRE: compléter l'initialisation du tour si nécessaire (mais possiblement
         // rien de spécial à faire)
 
-        // Réinitialiser les attributs spécifiques au tour
-        finTour = false;
-        pointsRails = 0;
-        // Réinitialisation des attributs spécifiques nécessaires pour gérer les effets des cartes
-        surcoutAdversaires = true;
-        surcoutRiviere = true;
-        surcoutMontagne = true;
-        surcoutVille = true;
-        surcoutRail = true;
-        recevoirFerraille = true;
-        bonusFerronnerie = false;
-        bonusTrainMatinal = false;
-
         // Boucle principale
         while (!finTour) {
             List<String> choixPossibles = new ArrayList<>();
@@ -386,6 +375,24 @@ public class Joueur {
         cartesRecues.clear();
         cartesEnJeu.clear();
         main.addAll(piocher(5));
+
+        reinitialiserTour();
+    }
+
+    private void reinitialiserTour() {
+        // Réinitialiser les attributs spécifiques au tour
+        finTour = false;
+        pointsRails = 0;
+        argent = 0;
+        // Réinitialisation des attributs spécifiques nécessaires pour gérer les effets des cartes
+        surcoutAdversaires = true;
+        surcoutRiviere = true;
+        surcoutMontagne = true;
+        surcoutVille = true;
+        surcoutRail = true;
+        recevoirFerraille = true;
+        bonusFerronnerie = false;
+        bonusTrainMatinal = false;
     }
 
     public void executerChoix(String choix) {
