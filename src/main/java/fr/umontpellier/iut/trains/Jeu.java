@@ -232,6 +232,7 @@ public class Jeu implements Runnable {
         // tours des joueurs jusqu'à une condition de fin
         while (!estFini()) {
             joueurCourant.jouerTour();
+            joueurCourant.setArgent(0);
             passeAuJoueurSuivant();
         }
 
