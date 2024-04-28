@@ -14,16 +14,13 @@ import java.util.stream.Collectors;
 import fr.umontpellier.iut.trains.cartes.Carte;
 import fr.umontpellier.iut.trains.cartes.FabriqueListeDeCartes;
 import fr.umontpellier.iut.trains.cartes.ListeDeCartes;
-import fr.umontpellier.iut.trains.plateau.Plateau;
-import fr.umontpellier.iut.trains.plateau.Tuile;
-import fr.umontpellier.iut.trains.plateau.TuileEtoile;
-import fr.umontpellier.iut.trains.plateau.TuileMer;
+import fr.umontpellier.iut.trains.plateau.*;
 
 public class Jeu implements Runnable {
     /**
      * Liste des joueurs
      */
-    private ArrayList<Joueur> joueurs;
+    private final ArrayList<Joueur> joueurs;
     /**
      * Joueur dont c'est le tour
      */
@@ -34,20 +31,20 @@ public class Jeu implements Runnable {
      * Associe à un nom de carte la liste des cartes correspondantes disponibles
      * dans la réserve
      */
-    private Map<String, ListeDeCartes> reserve;
+    private final Map<String, ListeDeCartes> reserve;
     /**
      * Liste des cartes écartées par les joueurs au cours de la partie
      */
-    private ListeDeCartes cartesEcartees;
+    private final ListeDeCartes cartesEcartees;
     /**
      * Nom de la ville du plateau (pour afficher le plateau dans l'interface
      * graphique)
      */
-    private String nomVille;
+    private final String nomVille;
     /**
      * Tuiles du plateau de jeu (indexées dans l'ordre de lecture)
      */
-    private List<Tuile> tuiles;
+    private final List<Tuile> tuiles;
     /**
      * Nombre de jetons Gare restant (non placés sur les tuiles)
      */
@@ -61,7 +58,7 @@ public class Jeu implements Runnable {
      * joueurs afin que l'interface graphique et les tests puissent fonctionner
      * correctement.
      */
-    private Scanner scanner;
+    private final Scanner scanner;
     /**
      * Messages d'information du jeu (affichés dans l'interface graphique)
      */
@@ -137,7 +134,7 @@ public class Jeu implements Runnable {
 
     /**
      * Renvoie un ensemble de tous les noms des cartes en jeu.
-     * 
+     * <p>
      * Cette liste contient les noms des cartes qui étaient disponibles dans les
      * piles la réserve et "Train omnibus" que les joueurs ont en main en début de
      * partie mais ne correspond pas à une pile de la réserve.
@@ -216,7 +213,7 @@ public class Jeu implements Runnable {
         String choix;
         List<String> choixPossibles = new ArrayList<>();
         for(Tuile tuile : tuiles)
-            if(!(tuile instanceof TuileMer || tuile instanceof TuileEtoile))
+            if(!(tuile.getType() == TypeTuile.MER || tuile.getType() == TypeTuile.ETOILE))
                 choixPossibles.add("TUILE:" + tuiles.indexOf(tuile));
         for (int i = 0; i < joueurs.size(); i++) {
             choix = joueurCourant.choisir(String.format("Le joueur %s doit choisir une case de départ", joueurCourant.getNom()), choixPossibles, null, false);
@@ -302,7 +299,7 @@ public class Jeu implements Runnable {
 
     /**
      * Lit une ligne de l'entrée standard
-     * 
+     * <p>
      * ATTENTION: Pour que l'interface graphique et les tests fonctionnent
      * correctement il faut toujours utiliser cette méthode pour lire l'entrée
      * clavier et non pas appeler directement les méthodes de {@code scanner} (c'est

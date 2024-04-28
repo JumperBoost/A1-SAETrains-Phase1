@@ -16,7 +16,7 @@ public class Joueur {
     /**
      * Le jeu auquel le joueur est rattaché
      */
-    private Jeu jeu;
+    private final Jeu jeu;
     /**
      * Booléen pour savoir si le tour du joueur est terminé
      */
@@ -24,7 +24,7 @@ public class Joueur {
     /**
      * Nom du joueur (pour les affichages console et UI)
      */
-    private String nom;
+    private final String nom;
     /**
      * Quantité d'argent que le joueur a (remis à zéro entre les tours)
      */
@@ -46,23 +46,23 @@ public class Joueur {
     /**
      * Liste des cartes en main
      */
-    private ListeDeCartes main;
+    private final ListeDeCartes main;
     /**
      * Liste des cartes dans la pioche (le début de la liste correspond au haut de la pile)
      */
-    private ListeDeCartes pioche;
+    private final ListeDeCartes pioche;
     /**
      * Liste de cartes dans la défausse
      */
-    private ListeDeCartes defausse;
+    private final ListeDeCartes defausse;
     /**
      * Liste des cartes en jeu (cartes jouées par le joueur pendant le tour)
      */
-    private ListeDeCartes cartesEnJeu;
+    private final ListeDeCartes cartesEnJeu;
     /**
      * Liste des cartes reçues pendant le tour
      */
-    private ListeDeCartes cartesRecues;
+    private final ListeDeCartes cartesRecues;
     /**
      * Carte action en cours d'utilisation
      * <p>
@@ -84,7 +84,7 @@ public class Joueur {
     /**
      * Couleur du joueur (utilisé par l'interface graphique)
      */
-    private CouleurJoueur couleur;
+    private final CouleurJoueur couleur;
 
 
     // Attributs nécessaires pour gérer les effets des cartes
@@ -96,7 +96,7 @@ public class Joueur {
     private boolean surcoutRail;
     private boolean recevoirFerraille;
     private boolean bonusFerronnerie;
-    private boolean bonusTrainMatinal;
+    private Carte bonusTrainMatinal;
 
     public Joueur(Jeu jeu, String nom, CouleurJoueur couleur) {
         this.jeu = jeu;
@@ -162,9 +162,9 @@ public class Joueur {
         int nb = 0;
         // Calcul des points via les stations et les rails
         for(Tuile tuile : jeu.getTuiles()) {
-            if(tuile instanceof TuileVille && tuile.hasRail(this)) {
+            if(tuile.getType() == TypeTuile.VILLE && tuile.hasRail(this)) {
                 nb += (int) Math.pow(2, tuile.getNbGares());
-            } else if(tuile instanceof TuileEtoile && tuile.hasRail(this)) {
+            } else if(tuile.getType() == TypeTuile.ETOILE && tuile.hasRail(this)) {
                 nb += ((TuileEtoile) tuile).getValeur();
             }
         }
@@ -187,6 +187,33 @@ public class Joueur {
     }
 
     /**
+     * Transférer la défausse à la pioche si nécessaire
+     * <p>
+     * Si la pioche est vide, la méthode commence par mélanger
+     * toute la défausse dans la pioche.
+     */
+    private void remplirPioche() {
+        if(pioche.isEmpty()) {
+            defausse.melanger();
+            pioche.addAll(defausse);
+            defausse.clear();
+        }
+    }
+
+    /**
+     * Récupère et renvoie la première carte de la pioche.
+     * <p>
+     * Si la pioche est vide, la méthode commence par mélanger toute la défausse
+     * dans la pioche.
+     *
+     * @return la carte piochée ou {@code null} si aucune carte disponible
+     */
+    public Carte recuperer() {
+        remplirPioche();
+        return !pioche.isEmpty() ? pioche.get(0) : null;
+    }
+
+    /**
      * Retire et renvoie la première carte de la pioche.
      * <p>
      * Si la pioche est vide, la méthode commence par mélanger toute la défausse
@@ -195,11 +222,7 @@ public class Joueur {
      * @return la carte piochée ou {@code null} si aucune carte disponible
      */
     public Carte piocher() {
-        if(pioche.isEmpty()) {
-            defausse.melanger();
-            pioche.addAll(defausse);
-            defausse.clear();
-        }
+        remplirPioche();
         return !pioche.isEmpty() ? pioche.remove(0) : null;
     }
 
@@ -239,15 +262,6 @@ public class Joueur {
     }
 
     /**
-     * Récupérer la carte action en cours d'utilisation
-     *
-     * @return La carte d'action ({@code null} si inexistant)
-     */
-    public Carte getCarteAction() {
-        return carteAction;
-    }
-
-    /**
      * Définir la carte d'action
      *
      * @param carte Une carte d'action
@@ -258,8 +272,7 @@ public class Joueur {
     }
 
     public void ajouterChoixPossibleAction(String choixPossible) {
-        if(!this.choixPossiblesAction.contains(choixPossible))
-            this.choixPossiblesAction.add(choixPossible);
+        this.choixPossiblesAction.add(choixPossible);
     }
 
     public void retirerChoixPossibleAction(String choixPossible) {
@@ -334,7 +347,9 @@ public class Joueur {
         // Boucle principale
         while (!finTour) {
             List<String> choixPossibles = new ArrayList<>();
-            if(carteAction == null || bonusTrainMatinal) {
+            if(carteAction != null)
+                choixPossibles.addAll(choixPossiblesAction);
+            else {
                 // Lister le choix des possibilités
                 for (Carte carte : main) {
                     // Ajoute les noms de toutes les cartes possibles à jouer
@@ -350,19 +365,21 @@ public class Joueur {
                 for(Tuile tuile : jeu.getTuiles())
                     if(tuile.hasRail(this))
                         for(Tuile voisin : tuile.getVoisines())
-                            if(!(voisin instanceof TuileMer || voisin instanceof TuileEtoile) && !voisin.hasRail(this))
+                            if(!(voisin.getType() == TypeTuile.MER) && !voisin.hasRail(this))
                                 choixPossibles.add("TUILE:" + jeu.getTuiles().indexOf(voisin));
 
                 // Ajoute les choix possibles d'une action Action passive
-                if(bonusTrainMatinal)
+                if(bonusTrainMatinal != null)
                     choixPossibles.addAll(choixPossiblesAction);
-            } else choixPossibles.addAll(choixPossiblesAction);
+            }
 
             // Choix de l'action à réaliser
             String choix = choisir(String.format("Tour de %s", this.nom), choixPossibles, null, peutPasser);
 
             // Exécuter l'action demandée par le joueur
-            if(carteAction == null) {
+            if(bonusTrainMatinal != null && carteAction == null)
+                bonusTrainMatinal.jouer(this, choix);
+            else if(carteAction == null) {
                 executerChoix(choix);
             } else carteAction.jouer(this, choix);
         }
@@ -392,7 +409,7 @@ public class Joueur {
         surcoutRail = true;
         recevoirFerraille = true;
         bonusFerronnerie = false;
-        bonusTrainMatinal = false;
+        bonusTrainMatinal = null;
     }
 
     public void executerChoix(String choix) {
@@ -410,28 +427,31 @@ public class Joueur {
                 // Poser un rail sur la tuile du plateau
                 int tuile_index = Integer.parseInt(choix.split("TUILE:")[1]);
                 Tuile tuile = jeu.getTuile(tuile_index);
-                if (tuile instanceof TuileMer || tuile.hasRail(this)) {
-                    log("Impossible de poser un rail sur cette tuile.");
-                    return;
-                }
 
                 // Déterminer le coût supplémentaire
                 int cout_supp = 0;
                 if(surcoutRail) {
-                    if (tuile instanceof TuileTerrain) {
-                        TypeTerrain type = ((TuileTerrain) tuile).getTypeTerrain();
-                        if (type == TypeTerrain.FLEUVE) {
-                            if (surcoutRiviere)
-                                cout_supp = 1;
-                        } else if (type == TypeTerrain.MONTAGNE) {
-                            if (surcoutMontagne)
-                                cout_supp = 2;
-                        }
-                    } else if (tuile instanceof TuileVille) {
-                        if (surcoutVille)
-                            cout_supp = 1 + tuile.getNbGares();
-                    } else if (tuile instanceof TuileEtoile)
-                        cout_supp = ((TuileEtoile) tuile).getValeur();
+                    switch (tuile.getType()) {
+                        case TERRAIN:
+                            TypeTerrain type = ((TuileTerrain) tuile).getTypeTerrain();
+                            if (type == TypeTerrain.FLEUVE) {
+                                if (surcoutRiviere)
+                                    cout_supp = 1;
+                            } else if (type == TypeTerrain.MONTAGNE) {
+                                if (surcoutMontagne)
+                                    cout_supp = 2;
+                            }
+                            break;
+
+                        case VILLE:
+                            if (surcoutVille)
+                                cout_supp = 1 + tuile.getNbGares();
+                            break;
+
+                        case ETOILE:
+                            cout_supp = ((TuileEtoile) tuile).getValeur();
+                            break;
+                    }
                     // Ajouter le coût supplémentaire des rails des autres joueurs
                     if (surcoutAdversaires)
                         cout_supp += tuile.getRailsSize();
@@ -439,10 +459,9 @@ public class Joueur {
 
                 // Placer une gare dans une tuile si possible
                 if (argent >= cout_supp) {
-                    if (recevoirFerraille && tuile.getRailsSize() > 0 && surcoutAdversaires)
+                    argent -= cout_supp;
+                    if (recevoirFerraille && !tuile.estVide() && surcoutAdversaires)
                         main.add(jeu.prendreDansLaReserve("Ferraille"));
-                    if (bonusFerronnerie)
-                        argent += 2;
                     tuile.ajouterRail(this);
                     pointsRails--;
                     nbJetonsRails--;
@@ -676,6 +695,10 @@ public class Joueur {
         this.surcoutVille = surcoutVille;
     }
 
+    public void setSurcoutRail(boolean surcoutRail) {
+        this.surcoutRail = surcoutRail;
+    }
+
     public boolean getRecevoirFerraille() {
         return recevoirFerraille;
     }
@@ -684,11 +707,15 @@ public class Joueur {
         this.recevoirFerraille = recevoirFerraille;
     }
 
+    public boolean getBonusFerronnerie() {
+        return bonusFerronnerie;
+    }
+
     public void setBonusFerronnerie(boolean bonusFerronnerie) {
         this.bonusFerronnerie = bonusFerronnerie;
     }
 
-    public void setBonusTrainMatinal(boolean bonusTrainMatinal) {
-        this.bonusTrainMatinal = bonusTrainMatinal;
+    public void setBonusTrainMatinal(Carte carteTrainMatinal) {
+        this.bonusTrainMatinal = carteTrainMatinal;
     }
 }

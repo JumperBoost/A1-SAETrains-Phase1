@@ -14,32 +14,35 @@ public class TrainMatinal extends Carte {
     @Override
     public void jouer(Joueur joueur) {
         super.jouer(joueur);
-        joueur.setCarteAction(this);
-        joueur.setBonusTrainMatinal(true);
-        joueur.ajouterChoixPossibleAction("oui");
-        joueur.ajouterChoixPossibleAction("non");
+        joueur.setBonusTrainMatinal(this);
         carteAchete = null;
     }
 
     @Override
     public void jouer(Joueur joueur, String choix) {
-        if(choix.startsWith("ACHAT:") && carteAchete == null) {
-            // Prendre une carte dans la réserve
-            String nomCarte = choix.split(":")[1];
-            Carte carte = joueur.getJeu().prendreDansLaReserve(nomCarte);
-            if (carte != null) {
-                // En attente du choix de l'emplacement par le joueur
-                carteAchete = carte;
-                carte.acheter(joueur);
+        if(choix.startsWith("ACHAT:")) {
+            if(carteAchete == null) {
+                // Prendre une carte dans la réserve
+                String nomCarte = choix.split(":")[1];
+                Carte carte = joueur.getJeu().prendreDansLaReserve(nomCarte);
+                if (carte != null) {
+                    // En attente du choix de l'emplacement par le joueur
+                    carteAchete = carte;
+                    carte.acheter(joueur);
+                    joueur.ajouterChoixPossibleAction("oui");
+                    joueur.ajouterChoixPossibleAction("non");
+                }
             }
         } else if(choix.equals("oui") && carteAchete != null) {
             // Placer la carte achetée dans la pioche
             joueur.getPioche().add(0, carteAchete);
             carteAchete = null;
+            joueur.viderChoixPossiblesActions();
         } else if(choix.equals("non") && carteAchete != null) {
             // Placer la carte achetée dans les cartes reçues
             joueur.getCartesRecues().add(carteAchete);
             carteAchete = null;
+            joueur.viderChoixPossiblesActions();
         } else joueur.executerChoix(choix); // Exécuter le choix du joueur si ce n'est pas un choix de l'effet de la carte
     }
 }

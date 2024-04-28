@@ -7,10 +7,10 @@ public class TuileEtoile extends Tuile {
     /**
      * Valeur du lieu éloigné (valeur indiquée sur le plateau)
      */
-    private int valeur;
+    private final int valeur;
 
     public TuileEtoile(int valeur) {
-        super();
+        super(TypeTuile.ETOILE);
         this.valeur = valeur;
     }
 

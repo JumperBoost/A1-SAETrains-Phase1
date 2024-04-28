@@ -14,15 +14,21 @@ public abstract class Tuile {
      * sur le plateau, sauf les tuiles entre lesquelles il y a une barrière
      * infranchissable)
      */
-    private ArrayList<Tuile> voisines;
+    private final ArrayList<Tuile> voisines;
     /**
      * Ensemble des joueurs qui ont posé un rail sur la tuile
      */
-    private Set<Joueur> rails;
+    private final Set<Joueur> rails;
+    private final TypeTuile type;
 
-    public Tuile() {
+    public Tuile(TypeTuile type) {
+        this.type = type;
         this.voisines = new ArrayList<>();
         this.rails = new HashSet<>();
+    }
+
+    public TypeTuile getType() {
+        return type;
     }
 
     /**

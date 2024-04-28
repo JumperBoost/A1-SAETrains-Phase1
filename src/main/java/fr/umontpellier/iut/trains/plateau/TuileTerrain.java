@@ -7,10 +7,10 @@ public class TuileTerrain extends Tuile {
     /**
      * Type de terrain de la tuile ({@code PLAINE}, {@code FLEUVE} ou {@code MONTAGNE})
      */
-    private TypeTerrain type;
+    private final TypeTerrain type;
 
     public TuileTerrain(TypeTerrain type) {
-        super();
+        super(TypeTuile.TERRAIN);
         this.type = type;
     }
 

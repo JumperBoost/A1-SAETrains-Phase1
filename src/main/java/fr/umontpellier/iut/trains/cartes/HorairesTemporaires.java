@@ -13,6 +13,7 @@ public class HorairesTemporaires extends Carte {
         int nbTrains = Math.min(2, joueur.getPioche().count(Type.TRAIN) + joueur.getDefausse().count(Type.TRAIN));
         while (nbTrains > 0) {
             Carte carte = joueur.piocher();
+            joueur.log("Carte pioché: " + carte.getNom());
             if(carte.getFirstType() == Type.TRAIN) {
                 joueur.getMain().add(carte);
                 nbTrains--;

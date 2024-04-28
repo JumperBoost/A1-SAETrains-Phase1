@@ -21,13 +21,14 @@ public class BureauDuChefDeGare extends Carte {
     @Override
     public void jouer(Joueur joueur, String choix) {
         Carte carte = joueur.getMain().getCarte(choix);
+        joueur.setCarteAction(null);
+        joueur.setPeutPasser(true);
         if(carte != null) {
+            joueur.log("Exécute la carte action " + getNom());
             carte.jouer(joueur);
             // Remise de la carte choisie dans la main du joueur pour pouvoir la jouer à nouveau plus tard
             joueur.getCartesEnJeu().remove(carte);
             joueur.getMain().add(carte);
-            joueur.setCarteAction(null);
-            joueur.setPeutPasser(true);
         }
     }
 }

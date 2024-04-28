@@ -23,7 +23,7 @@ public class CentreDeControle extends Carte {
 
     @Override
     public void jouer(Joueur joueur, String choix) {
-        if(joueur.getPioche().get(0).getNom().equals(choix))
+        if(!joueur.getPioche().isEmpty() && joueur.recuperer().getNom().equals(choix))
             joueur.getMain().add(joueur.piocher());
         joueur.setCarteAction(null);
         joueur.setPeutPasser(true);
