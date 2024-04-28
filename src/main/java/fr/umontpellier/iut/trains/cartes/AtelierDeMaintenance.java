@@ -21,7 +21,7 @@ public class AtelierDeMaintenance extends Carte {
 
     @Override
     public void jouer(Joueur joueur, String choix) {
-        if(!joueur.getJeu().getReserve().get(choix).isEmpty())
+        if(joueur.getJeu().getReserve().containsKey(choix) && !joueur.getJeu().getReserve().get(choix).isEmpty())
             joueur.getCartesRecues().add(joueur.getJeu().getReserve().get(choix).retirer(choix));
         joueur.setCarteAction(null);
         joueur.setPeutPasser(true);

@@ -13,28 +13,37 @@ public class UsineDeWagons extends Carte {
     public void jouer(Joueur joueur) {
         super.jouer(joueur);
         joueur.setCarteAction(this);
-        joueur.setPeutPasser(false);
         for(Carte carte : joueur.getMain())
             if(carte.getFirstType() == Type.TRAIN)
                 joueur.ajouterChoixPossibleAction(carte.getNom());
+        if(joueur.getNbChoixPossiblesAction() > 0)
+            joueur.setPeutPasser(false);
+        else joueur.setCarteAction(null);
     }
 
     @Override
     public void jouer(Joueur joueur, String choix) {
-        Carte carte = joueur.getMain().retirer(choix);
-        joueur.getJeu().getCartesEcartees().add(carte);
-        List<Map.Entry<String, Integer>> cartes_reserve_trains = new ArrayList<>();
-        // Récupère les cartes trains de la réserve du joueur par leur nom et leur coût, si elles sont moins chères que la carte écartée + 3
-        for(Map.Entry<String, ListeDeCartes> carte_reserve : joueur.getJeu().getReserve().entrySet())
-            if(!carte_reserve.getValue().isEmpty() && carte_reserve.getValue().get(0).getFirstType() == Type.TRAIN
-                && carte_reserve.getValue().get(0).getCout() <= carte.getCout() + 3)
-                cartes_reserve_trains.add(new AbstractMap.SimpleEntry<>(carte_reserve.getKey(), carte_reserve.getValue().get(0).getCout()));
-        // Trier les cartes par ordre décroissant de coût
-        cartes_reserve_trains.sort(Map.Entry.comparingByValue(Comparator.reverseOrder()));
+        if(choix.startsWith("ACHAT:")) {
+            String nomCarte = choix.split("ACHAT:")[1];
+            Carte carte = joueur.getJeu().prendreDansLaReserve(nomCarte);
+            if(carte != null) {
+                joueur.getMain().add(carte);
+                joueur.setCarteAction(null);
+                joueur.setPeutPasser(true);
+            }
+        } else {
+            Carte carte = joueur.getMain().retirer(choix);
+            joueur.getJeu().getCartesEcartees().add(carte);
 
-        // Ajoute à la main du joueur la carte train la plus chère possible
-        joueur.getMain().add(joueur.getJeu().prendreDansLaReserve(cartes_reserve_trains.get(0).getKey()));
-        joueur.setCarteAction(null);
-        joueur.setPeutPasser(true);
+            joueur.viderChoixPossiblesActions();
+            Carte c;
+            for(Map.Entry<String, ListeDeCartes> carte_reserve : joueur.getJeu().getReserve().entrySet()) {
+                if(!carte_reserve.getValue().isEmpty()) {
+                    c = carte_reserve.getValue().get(0);
+                    if(c.getFirstType() == Type.TRAIN && c.getCout() <= carte.getCout() + 3)
+                        joueur.ajouterChoixPossibleAction("ACHAT:" + c.getNom());
+                }
+            }
+        }
     }
 }

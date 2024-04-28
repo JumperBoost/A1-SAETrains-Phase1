@@ -13,11 +13,13 @@ public class Depot extends Carte {
     public void jouer(Joueur joueur) {
         super.jouer(joueur);
         nbCartes = Math.min(2, joueur.getPioche().size() + joueur.getDefausse().size());
-        joueur.getMain().addAll(joueur.piocher(2));
-        joueur.setCarteAction(this);
-        joueur.setPeutPasser(false);
-        for(Carte carte : joueur.getMain())
-            joueur.ajouterChoixPossibleAction(carte.getNom());
+        if(nbCartes != 0) {
+            joueur.getMain().addAll(joueur.piocher(nbCartes));
+            joueur.setCarteAction(this);
+            joueur.setPeutPasser(false);
+            for(Carte carte : joueur.getMain())
+                joueur.ajouterChoixPossibleAction(carte.getNom());
+        }
     }
 
     @Override

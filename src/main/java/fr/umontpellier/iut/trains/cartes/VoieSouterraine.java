@@ -10,5 +10,6 @@ public class VoieSouterraine extends CarteRail {
     @Override
     public void jouer(Joueur joueur) {
         super.jouer(joueur);
+        joueur.setSurcoutRail(false);
     }
 }

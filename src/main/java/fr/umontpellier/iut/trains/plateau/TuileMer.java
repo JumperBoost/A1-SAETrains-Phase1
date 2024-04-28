@@ -6,6 +6,6 @@ package fr.umontpellier.iut.trains.plateau;
  */
 public class TuileMer extends Tuile {
     public TuileMer() {
-        super();
+        super(TypeTuile.MER);
     }
 }

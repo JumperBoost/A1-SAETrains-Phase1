@@ -14,6 +14,7 @@ public class FeuDeSignalisation extends Carte {
         if(joueur.getPioche().size() + joueur.getDefausse().size() > 0) {
             joueur.setCarteAction(this);
             joueur.setPeutPasser(false);
+            joueur.log("Carte à défausser: " + joueur.recuperer().getNom());
             joueur.ajouterChoixPossibleAction("oui");
             joueur.ajouterChoixPossibleAction("non");
         }

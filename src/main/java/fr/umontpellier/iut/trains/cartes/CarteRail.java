@@ -11,6 +11,9 @@ public abstract class CarteRail extends Carte {
     public void jouer(Joueur joueur) {
         super.jouer(joueur);
         joueur.incrementerPointsRails(1);
-        joueur.getCartesRecues().add(joueur.getJeu().prendreDansLaReserve("Ferraille"));
+        if(joueur.getRecevoirFerraille())
+            joueur.getCartesRecues().add(joueur.getJeu().prendreDansLaReserve("Ferraille"));
+        if(joueur.getBonusFerronnerie())
+            joueur.setArgent(joueur.getArgent() + 2);
     }
 }

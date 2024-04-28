@@ -3,6 +3,7 @@ package fr.umontpellier.iut.trains.cartes;
 import fr.umontpellier.iut.trains.Joueur;
 import fr.umontpellier.iut.trains.plateau.Tuile;
 import fr.umontpellier.iut.trains.plateau.TuileVille;
+import fr.umontpellier.iut.trains.plateau.TypeTuile;
 
 public class Gare extends Carte {
     public Gare() {
@@ -12,13 +13,14 @@ public class Gare extends Carte {
     @Override
     public void jouer(Joueur joueur) {
         super.jouer(joueur);
-        joueur.getCartesRecues().add(joueur.getJeu().prendreDansLaReserve("Ferraille"));
+        if(joueur.getRecevoirFerraille())
+            joueur.getCartesRecues().add(joueur.getJeu().prendreDansLaReserve("Ferraille"));
         if(joueur.getJeu().getNbJetonsGare() > 0) {
             joueur.setCarteAction(this);
             // Déterminer la liste des villes où le joueur peut ajouter une station
             boolean tuileDispo = false;
             for (Tuile tuile : joueur.getJeu().getTuiles()) {
-                if (tuile instanceof TuileVille && ((TuileVille) tuile).getNbGaresDispo() > 0) {
+                if (tuile.getType() == TypeTuile.VILLE && ((TuileVille) tuile).getNbGaresDispo() > 0) {
                     joueur.ajouterChoixPossibleAction("TUILE:" + joueur.getJeu().getTuiles().indexOf(tuile));
                     tuileDispo = true;
                 }
