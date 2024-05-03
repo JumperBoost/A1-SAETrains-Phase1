@@ -10,7 +10,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class CartesTestEleve extends BaseTestClass {
+public class CartesEleveTest extends BaseTestClass {
 
     public void test_achat_carte_victoire(Carte c) {
         setupJeu(c.getNom());
