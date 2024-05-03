@@ -27,5 +27,6 @@ public class TrainPostal extends Carte {
         Carte carte = joueur.getMain().retirer(choix);
         joueur.getDefausse().add(carte);
         joueur.setArgent(joueur.getArgent() + 1);
+        joueur.retirerChoixPossibleAction(choix);
     }
 }

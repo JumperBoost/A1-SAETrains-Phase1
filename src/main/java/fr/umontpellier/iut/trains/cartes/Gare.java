@@ -13,7 +13,7 @@ public class Gare extends Carte {
     @Override
     public void jouer(Joueur joueur) {
         super.jouer(joueur);
-        if(joueur.getRecevoirFerraille())
+        if(joueur.getRecevoirFerraille() && joueur.getJeu().estExistantDansLaReserve("Ferraille"))
             joueur.getCartesRecues().add(joueur.getJeu().prendreDansLaReserve("Ferraille"));
         if(joueur.getJeu().getNbJetonsGare() > 0) {
             joueur.setCarteAction(this);

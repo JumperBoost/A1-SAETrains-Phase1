@@ -95,7 +95,7 @@ public class Joueur {
     private boolean surcoutVille;
     private boolean surcoutRail;
     private boolean recevoirFerraille;
-    private boolean bonusFerronnerie;
+    private int bonusFerronnerie;
     private Carte bonusTrainMatinal;
 
     public Joueur(Jeu jeu, String nom, CouleurJoueur couleur) {
@@ -163,7 +163,8 @@ public class Joueur {
         // Calcul des points via les stations et les rails
         for(Tuile tuile : jeu.getTuiles()) {
             if(tuile.getType() == TypeTuile.VILLE && tuile.hasRail(this)) {
-                nb += (int) Math.pow(2, tuile.getNbGares());
+                if(tuile.getNbGares() > 0)
+                    nb += (int) Math.pow(2, tuile.getNbGares());
             } else if(tuile.getType() == TypeTuile.ETOILE && tuile.hasRail(this)) {
                 nb += ((TuileEtoile) tuile).getValeur();
             }
@@ -249,6 +250,13 @@ public class Joueur {
             cartes.add(carte);
         }
         return cartes;
+    }
+
+    /**
+     * @return {@code true} si le joueur peut piocher une carte (depuis la pioche ou défausse), {@code false} sinon
+     */
+    public boolean getPeutPiocher() {
+        return pioche.size() + defausse.size() > 0;
     }
 
     /**
@@ -341,8 +349,6 @@ public class Joueur {
     public void jouerTour() {
         // Initialisation
         jeu.log("<div class=\"tour\">Tour de " + toLog() + "</div>");
-        // À FAIRE: compléter l'initialisation du tour si nécessaire (mais possiblement
-        // rien de spécial à faire)
 
         // Boucle principale
         while (!finTour) {
@@ -384,7 +390,6 @@ public class Joueur {
             } else carteAction.jouer(this, choix);
         }
         // Finalisation
-        // À FAIRE: compléter la finalisation du tour
         defausse.addAll(main);
         main.clear();
         defausse.addAll(cartesRecues);
@@ -408,7 +413,7 @@ public class Joueur {
         surcoutVille = true;
         surcoutRail = true;
         recevoirFerraille = true;
-        bonusFerronnerie = false;
+        bonusFerronnerie = 0;
         bonusTrainMatinal = null;
     }
 
@@ -461,7 +466,7 @@ public class Joueur {
                 if (argent >= cout_supp) {
                     argent -= cout_supp;
                     if (recevoirFerraille && !tuile.estVide() && surcoutAdversaires)
-                        main.add(jeu.prendreDansLaReserve("Ferraille"));
+                        cartesRecues.add(jeu.prendreDansLaReserve("Ferraille"));
                     tuile.ajouterRail(this);
                     pointsRails--;
                     nbJetonsRails--;
@@ -667,12 +672,16 @@ public class Joueur {
         return nbJetonsRails;
     }
 
+    public void retirerJetonsRails(){
+        nbJetonsRails--;
+    }
+
     public Jeu getJeu() {
         return jeu;
     }
 
-    public void incrementerPointsRails(int points) {
-        pointsRails += points;
+    public void incrementerPointsRails() {
+        pointsRails++;
     }
 
     /*
@@ -707,12 +716,12 @@ public class Joueur {
         this.recevoirFerraille = recevoirFerraille;
     }
 
-    public boolean getBonusFerronnerie() {
+    public int getBonusFerronnerie() {
         return bonusFerronnerie;
     }
 
-    public void setBonusFerronnerie(boolean bonusFerronnerie) {
-        this.bonusFerronnerie = bonusFerronnerie;
+    public void incrementerBonusFerronnerie(int bonusFerronnerie) {
+        this.bonusFerronnerie += bonusFerronnerie;
     }
 
     public void setBonusTrainMatinal(Carte carteTrainMatinal) {

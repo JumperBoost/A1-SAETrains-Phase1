@@ -12,10 +12,10 @@ public class Depot extends Carte {
     @Override
     public void jouer(Joueur joueur) {
         super.jouer(joueur);
+        joueur.setCarteAction(this);
         nbCartes = Math.min(2, joueur.getPioche().size() + joueur.getDefausse().size());
         if(nbCartes != 0) {
             joueur.getMain().addAll(joueur.piocher(nbCartes));
-            joueur.setCarteAction(this);
             joueur.setPeutPasser(false);
             for(Carte carte : joueur.getMain())
                 joueur.ajouterChoixPossibleAction(carte.getNom());
@@ -25,9 +25,10 @@ public class Depot extends Carte {
     @Override
     public void jouer(Joueur joueur, String choix) {
         Carte carte = joueur.getMain().retirer(choix);
-        joueur.getDefausse().add(carte);
+        if(carte != null)
+            joueur.getDefausse().add(carte);
         joueur.retirerChoixPossibleAction(choix);
-        if(--nbCartes == 0) {
+        if(--nbCartes <= 0) {
             joueur.setCarteAction(null);
             joueur.setPeutPasser(true);
         }

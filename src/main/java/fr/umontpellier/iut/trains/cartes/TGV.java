@@ -12,7 +12,7 @@ public class TGV extends Carte {
     @Override
     public void jouer(Joueur joueur) {
         super.jouer(joueur);
-        if (joueur.getCartesEnJeu().stream().anyMatch(carte -> carte.getNom().equals("Train omnibus")))
+        if (joueur.getCartesEnJeu().count("Train omnibus") > 0)
             joueur.setArgent(joueur.getArgent() + 1);
     }
 }

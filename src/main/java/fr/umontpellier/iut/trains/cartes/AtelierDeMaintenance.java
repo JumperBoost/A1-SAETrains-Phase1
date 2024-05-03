@@ -16,13 +16,12 @@ public class AtelierDeMaintenance extends Carte {
                 joueur.ajouterChoixPossibleAction(carte.getNom());
         if(joueur.getNbChoixPossiblesAction() > 0)
             joueur.setPeutPasser(false);
-        else joueur.setCarteAction(null);
     }
 
     @Override
     public void jouer(Joueur joueur, String choix) {
-        if(joueur.getJeu().getReserve().containsKey(choix) && !joueur.getJeu().getReserve().get(choix).isEmpty())
-            joueur.getCartesRecues().add(joueur.getJeu().getReserve().get(choix).retirer(choix));
+        if(joueur.getJeu().estExistantDansLaReserve(choix))
+            joueur.getCartesRecues().add(joueur.getJeu().prendreDansLaReserve(choix));
         joueur.setCarteAction(null);
         joueur.setPeutPasser(true);
     }

@@ -12,9 +12,9 @@ public class BureauDuChefDeGare extends Carte {
         super.jouer(joueur);
         joueur.setCarteAction(this);
         for(Carte carte : joueur.getMain())
-            if(carte.getFirstType() == Type.ACTION && !carte.getNom().equals(getNom()))
+            if(carte.getTypesCarte().contains(Type.ACTION) && !carte.getNom().equals(getNom()))
                 joueur.ajouterChoixPossibleAction(carte.getNom());
-        if(joueur.getNbChoixPossiblesAction() != 0)
+        if(joueur.getNbChoixPossiblesAction() > 0)
             joueur.setPeutPasser(false);
     }
 
@@ -24,11 +24,14 @@ public class BureauDuChefDeGare extends Carte {
         joueur.setCarteAction(null);
         joueur.setPeutPasser(true);
         if(carte != null) {
-            joueur.log("Exécute la carte action " + getNom());
+            joueur.log("Exécute la carte action " + carte.getNom());
             carte.jouer(joueur);
-            // Remise de la carte choisie dans la main du joueur pour pouvoir la jouer à nouveau plus tard
-            joueur.getCartesEnJeu().remove(carte);
-            joueur.getMain().add(carte);
+            // Remise de la carte choisie dans la main du joueur pour pouvoir la jouer à nouveau plus tard + Retrait de l'argent gagné
+            if(joueur.getCartesEnJeu().contains(carte) && !carte.getNom().equals("Horaires estivaux")) {
+                joueur.getCartesEnJeu().remove(carte);
+                joueur.getMain().add(carte);
+            }
+            joueur.setArgent(joueur.getArgent() - carte.getValeur());
         }
     }
 }

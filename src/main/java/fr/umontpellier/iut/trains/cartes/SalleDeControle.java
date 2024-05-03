@@ -10,11 +10,7 @@ public class SalleDeControle extends Carte {
     @Override
     public void jouer(Joueur joueur) {
         super.jouer(joueur);
-        int nbCartes = 3;
-        Carte c;
-        while(nbCartes > 0 && (c = joueur.piocher()) != null){
-            joueur.getMain().add(c);
-            nbCartes--;
-        }
+        int nbCartes = Math.min(3, joueur.getPioche().size() +  joueur.getDefausse().size());
+        joueur.getMain().addAll(joueur.piocher(nbCartes));
     }
 }

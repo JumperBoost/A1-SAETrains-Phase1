@@ -16,13 +16,13 @@ public class ParcDAttractions extends Carte {
                 joueur.ajouterChoixPossibleAction(carte.getNom());
         if(joueur.getNbChoixPossiblesAction() > 0)
             joueur.setPeutPasser(false);
-        else joueur.setCarteAction(null);
     }
 
     @Override
     public void jouer(Joueur joueur, String choix) {
         Carte carte = joueur.getCartesEnJeu().getCarte(choix);
-        joueur.setArgent(joueur.getArgent() + carte.getValeur());
+        if(carte != null)
+            joueur.setArgent(joueur.getArgent() + carte.getValeur());
         joueur.setCarteAction(null);
         joueur.setPeutPasser(true);
     }

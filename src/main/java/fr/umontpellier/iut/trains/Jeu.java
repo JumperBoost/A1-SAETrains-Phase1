@@ -195,6 +195,16 @@ public class Jeu implements Runnable {
     }
 
     /**
+     * Vérifie si il reste au moins une carte de la pile de réserve correspondant au nom de la carte donné
+     *
+     * @param nomCarte nom de la carte à vérifier
+     * @return {@code true} si il reste au moins une carte de la pile de réserve correspondant au nom de la carte donné, {@code false} sinon
+     */
+    public boolean estExistantDansLaReserve(String nomCarte) {
+        return reserve.containsKey(nomCarte) && !reserve.get(nomCarte).isEmpty();
+    }
+
+    /**
      * Modifie l'attribut {@code joueurCourant} pour passer au joueur suivant dans
      * l'ordre du tableau {@code joueurs} (le tableau est considéré circulairement)
      */

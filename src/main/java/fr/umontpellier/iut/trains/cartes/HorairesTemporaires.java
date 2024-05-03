@@ -11,6 +11,7 @@ public class HorairesTemporaires extends Carte {
     public void jouer(Joueur joueur) {
         super.jouer(joueur);
         int nbTrains = Math.min(2, joueur.getPioche().count(Type.TRAIN) + joueur.getDefausse().count(Type.TRAIN));
+        boolean conditionRespectee = nbTrains == 2;
         while (nbTrains > 0) {
             Carte carte = joueur.piocher();
             joueur.log("Carte pioché: " + carte.getNom());
@@ -18,6 +19,10 @@ public class HorairesTemporaires extends Carte {
                 joueur.getMain().add(carte);
                 nbTrains--;
             } else joueur.getDefausse().add(carte);
+        }
+        if(!conditionRespectee) {
+            joueur.getDefausse().addAll(joueur.getPioche());
+            joueur.getPioche().clear();
         }
     }
 }

@@ -10,10 +10,9 @@ public abstract class CarteRail extends Carte {
     @Override
     public void jouer(Joueur joueur) {
         super.jouer(joueur);
-        joueur.incrementerPointsRails(1);
-        if(joueur.getRecevoirFerraille())
+        joueur.incrementerPointsRails();
+        if(joueur.getRecevoirFerraille() && joueur.getJeu().estExistantDansLaReserve("Ferraille"))
             joueur.getCartesRecues().add(joueur.getJeu().prendreDansLaReserve("Ferraille"));
-        if(joueur.getBonusFerronnerie())
-            joueur.setArgent(joueur.getArgent() + 2);
+        joueur.setArgent(joueur.getArgent() + joueur.getBonusFerronnerie());
     }
 }

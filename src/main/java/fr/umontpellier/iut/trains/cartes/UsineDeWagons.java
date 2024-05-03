@@ -18,7 +18,6 @@ public class UsineDeWagons extends Carte {
                 joueur.ajouterChoixPossibleAction(carte.getNom());
         if(joueur.getNbChoixPossiblesAction() > 0)
             joueur.setPeutPasser(false);
-        else joueur.setCarteAction(null);
     }
 
     @Override
@@ -31,7 +30,9 @@ public class UsineDeWagons extends Carte {
                 joueur.setCarteAction(null);
                 joueur.setPeutPasser(true);
             }
-        } else {
+        } else if(choix.isEmpty())
+            joueur.setCarteAction(null);    // Valable uniquement lorsque le joueur n'a aucune carte Train dans sa main
+        else {
             Carte carte = joueur.getMain().retirer(choix);
             joueur.getJeu().getCartesEcartees().add(carte);
 

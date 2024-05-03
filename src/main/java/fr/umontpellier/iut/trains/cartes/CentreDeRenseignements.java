@@ -24,15 +24,15 @@ public class CentreDeRenseignements extends Carte {
         ordreCartes.clear();
         cartes.clear();
         joueur.setCarteAction(this);
-        nbCartes = Math.min(4, joueur.getPioche().size() + joueur.getDefausse().size());
-        // Piocher les cartes
-        cartes.addAll(joueur.piocher(nbCartes));
-        for(Carte carte : cartes) {
-            joueur.ajouterChoixPossibleAction(carte.getNom());
-            joueur.log("Carte piochée: " + carte.getNom());
+        if(joueur.getPeutPiocher()) {
+            nbCartes = Math.min(4, joueur.getPioche().size() + joueur.getDefausse().size());
+            // Piocher les cartes
+            cartes.addAll(joueur.piocher(nbCartes));
+            for (Carte carte : cartes) {
+                joueur.ajouterChoixPossibleAction(carte.getNom());
+                joueur.log("Carte piochée: " + carte.getNom());
+            }
         }
-        if(joueur.getNbChoixPossiblesAction() == 0)
-            joueur.setCarteAction(null);
     }
 
     @Override

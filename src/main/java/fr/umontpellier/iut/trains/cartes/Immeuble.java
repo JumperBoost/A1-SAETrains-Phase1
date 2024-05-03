@@ -10,7 +10,7 @@ public class Immeuble extends Carte {
     @Override
     public void acheter(Joueur joueur) {
         super.acheter(joueur);
-        if(joueur.getRecevoirFerraille())
+        if(joueur.getRecevoirFerraille() && joueur.getJeu().estExistantDansLaReserve("Ferraille"))
             joueur.getCartesRecues().add(joueur.getJeu().prendreDansLaReserve("Ferraille"));
     }
 }

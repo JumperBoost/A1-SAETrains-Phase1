@@ -10,22 +10,27 @@ public class FeuDeSignalisation extends Carte {
     @Override
     public void jouer(Joueur joueur) {
         super.jouer(joueur);
-        joueur.getMain().add(joueur.piocher());
-        if(joueur.getPioche().size() + joueur.getDefausse().size() > 0) {
-            joueur.setCarteAction(this);
+        joueur.setCarteAction(this);
+        Carte carte = joueur.piocher();
+        if(carte != null)
+            joueur.getMain().add(carte);
+        if(joueur.getPeutPiocher()) {
             joueur.setPeutPasser(false);
             joueur.log("Carte à défausser: " + joueur.recuperer().getNom());
             joueur.ajouterChoixPossibleAction("oui");
             joueur.ajouterChoixPossibleAction("non");
-        }
+        } else if(carte != null)
+            joueur.setCarteAction(null);    // Si la seconde carte n'est pas piochable, l'effet de la carte est terminé
     }
 
     @Override
     public void jouer(Joueur joueur, String choix) {
         Carte carte = joueur.piocher();
-        if(choix.equals("oui"))
-            joueur.getDefausse().add(carte);
-        else joueur.getPioche().add(0, carte);
+        if(carte != null) {
+            if (choix.equals("oui"))
+                joueur.getDefausse().add(carte);
+            else joueur.getPioche().add(0, carte);
+        }
         joueur.setCarteAction(null);
         joueur.setPeutPasser(true);
     }

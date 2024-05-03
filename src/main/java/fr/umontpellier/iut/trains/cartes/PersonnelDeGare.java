@@ -19,18 +19,16 @@ public class PersonnelDeGare extends Carte {
 
     @Override
     public void jouer(Joueur joueur, String choix) {
-        Carte c;
         switch (choix) {
             case "piocher":
-                c = joueur.piocher();
-                if(c != null)
-                    joueur.getMain().add(c);
+                if(joueur.getPeutPiocher())
+                    joueur.getMain().add(joueur.piocher());
                 break;
             case "argent":
                 joueur.setArgent(joueur.getArgent() + 1);
                 break;
             case "ferraille":
-                c = joueur.getMain().retirer("Ferraille");
+                Carte c = joueur.getMain().retirer("Ferraille");
                 if(c != null)
                     joueur.getJeu().getReserve().get("Ferraille").add(c);
                 break;
