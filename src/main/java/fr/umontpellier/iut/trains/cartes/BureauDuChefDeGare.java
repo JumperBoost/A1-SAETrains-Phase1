@@ -25,6 +25,8 @@ public class BureauDuChefDeGare extends Carte {
         joueur.setPeutPasser(true);
         if(carte != null) {
             joueur.log("Exécute la carte action " + carte.getNom());
+            if(joueur.getSourceClone() == null)
+                joueur.setSourceClone(this);
             carte.jouer(joueur);
             // Remise de la carte choisie dans la main du joueur pour pouvoir la jouer à nouveau plus tard + Retrait de l'argent gagné
             if(joueur.getCartesEnJeu().contains(carte)) {
