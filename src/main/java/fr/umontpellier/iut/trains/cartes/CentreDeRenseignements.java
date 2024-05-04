@@ -1,5 +1,6 @@
 package fr.umontpellier.iut.trains.cartes;
 
+import fr.umontpellier.iut.trains.Bouton;
 import fr.umontpellier.iut.trains.Joueur;
 
 import java.util.ArrayList;
@@ -24,6 +25,7 @@ public class CentreDeRenseignements extends Carte {
         ordreCartes.clear();
         cartes.clear();
         joueur.setCarteAction(this);
+        List<Bouton> boutonAjouter = new ArrayList<>();
         if(joueur.getPeutPiocher()) {
             nbCartes = Math.min(4, joueur.getPioche().size() + joueur.getDefausse().size());
             // Piocher les cartes
@@ -31,7 +33,9 @@ public class CentreDeRenseignements extends Carte {
             for (Carte carte : cartes) {
                 joueur.ajouterChoixPossibleAction(carte.getNom());
                 joueur.log("Carte piochée: " + carte.getNom());
+                boutonAjouter.add(new Bouton(carte.getNom(), carte.getNom()));
             }
+            jouer(joueur, joueur.choisir("Choisissez parmis ces cartes celles que vous souhaitez garder", null, boutonAjouter, true));
         }
     }
 
