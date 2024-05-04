@@ -20,6 +20,7 @@ public class HorairesEstivaux extends Carte {
     public void jouer(Joueur joueur, String choix) {
         if (choix.equals("oui")) {
             joueur.setArgent(joueur.getArgent() + 3);
+            joueur.getMain().remove(this);
             joueur.getCartesEnJeu().remove(this);
             joueur.getJeu().getCartesEcartees().add(this);
         }

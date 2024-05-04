@@ -789,10 +789,10 @@ public class CartesEleveTest extends BaseTestClass {
 
         jouerTourPartiel("Bureau du chef de gare", "Horaires estivaux", "non");
 
-        assertTrue(containsReferences(main));
+        assertTrue(containsReferences(main, he));
         assertTrue(containsReferencesInOrder(pioche, fondPioche));
         assertTrue(containsReferences(defausse));
-        assertTrue(containsReferences(cartesEnJeu, c, he));
+        assertTrue(containsReferences(cartesEnJeu, c));
         assertTrue(containsReferences(cartesRecues));
         assertEquals(0, getArgent(joueur));
         assertEquals(0, getPointsRails(joueur));

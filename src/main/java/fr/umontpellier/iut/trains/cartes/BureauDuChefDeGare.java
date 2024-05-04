@@ -27,7 +27,7 @@ public class BureauDuChefDeGare extends Carte {
             joueur.log("Exécute la carte action " + carte.getNom());
             carte.jouer(joueur);
             // Remise de la carte choisie dans la main du joueur pour pouvoir la jouer à nouveau plus tard + Retrait de l'argent gagné
-            if(joueur.getCartesEnJeu().contains(carte) && !carte.getNom().equals("Horaires estivaux")) {
+            if(joueur.getCartesEnJeu().contains(carte)) {
                 joueur.getCartesEnJeu().remove(carte);
                 joueur.getMain().add(carte);
             }
