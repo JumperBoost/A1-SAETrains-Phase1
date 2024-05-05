@@ -1,5 +1,6 @@
 package fr.umontpellier.iut.trains.cartes;
 
+import fr.umontpellier.iut.trains.Bouton;
 import fr.umontpellier.iut.trains.Joueur;
 
 public class HorairesEstivaux extends Carte {
@@ -12,8 +13,8 @@ public class HorairesEstivaux extends Carte {
         super.jouer(joueur);
         joueur.setCarteAction(this);
         joueur.setPeutPasser(false);
-        joueur.ajouterChoixPossibleAction("oui");
-        joueur.ajouterChoixPossibleAction("non");
+        joueur.ajouterBoutonPossibleAction(new Bouton("Oui !", "oui"));
+        joueur.ajouterBoutonPossibleAction(new Bouton("Non !", "non"));
     }
 
     @Override

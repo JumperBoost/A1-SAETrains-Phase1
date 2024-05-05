@@ -70,11 +70,17 @@ public class Joueur {
      */
     private Carte carteAction;
     /**
-     * Liste des choix possibles d'une action Action
+     * Liste des choix possibles d'une carte Action
      * <p>
      * Permet de lister et connaître la liste des choix possibles lors de l'utilisation en cours d'une carte Action
      */
     private final List<String> choixPossiblesAction;
+    /**
+     * Liste des boutons possibles d'une carte Action
+     * <p>
+     * Permet de lister et connaître la liste des boutons possibles lors de l'utilisation en cours d'une carte Action
+     */
+    private final List<Bouton> boutonPossiblesAction;
     /**
      * Booléen pour autoriser un prompt vide
      * <p>
@@ -114,6 +120,7 @@ public class Joueur {
         cartesRecues = new ListeDeCartes();
         carteAction = null;
         choixPossiblesAction = new ArrayList<>();
+        boutonPossiblesAction = new ArrayList<>();
         peutPasser = true;
 
         reinitialiserTour();
@@ -277,6 +284,7 @@ public class Joueur {
      */
     public void setCarteAction(Carte carte) {
         viderChoixPossiblesActions();
+        viderBoutonPossiblesAction();
         this.carteAction = carte;
     }
 
@@ -294,6 +302,18 @@ public class Joueur {
 
     public void viderChoixPossiblesActions() {
         this.choixPossiblesAction.clear();
+    }
+
+    public void ajouterBoutonPossibleAction(Bouton boutonPossible) {
+        this.boutonPossiblesAction.add(boutonPossible);
+    }
+
+    public void retirerBoutonPossibleAction(String boutonPossible) {
+        this.boutonPossiblesAction.stream().filter(bouton -> bouton.valeur().equals(boutonPossible)).findFirst().ifPresent(boutonPossiblesAction::remove);
+    }
+
+    public void viderBoutonPossiblesAction() {
+        this.boutonPossiblesAction.clear();
     }
 
     /**
@@ -381,7 +401,7 @@ public class Joueur {
             }
 
             // Choix de l'action à réaliser
-            String choix = choisir(String.format("Tour de %s", this.nom), choixPossibles, null, peutPasser);
+            String choix = choisir(String.format("Tour de %s", this.nom), choixPossibles, boutonPossiblesAction, peutPasser);
 
             // Exécuter l'action demandée par le joueur
             if(bonusTrainMatinal != null && carteAction == null)

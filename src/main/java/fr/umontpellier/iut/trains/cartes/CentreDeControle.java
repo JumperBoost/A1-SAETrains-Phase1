@@ -1,5 +1,6 @@
 package fr.umontpellier.iut.trains.cartes;
 
+import fr.umontpellier.iut.trains.Bouton;
 import fr.umontpellier.iut.trains.Joueur;
 
 public class CentreDeControle extends Carte {
@@ -15,11 +16,11 @@ public class CentreDeControle extends Carte {
             joueur.setPeutPasser(false);
             joueur.getMain().add(joueur.piocher());
             for (Carte carte : joueur.getCartes())
-                joueur.ajouterChoixPossibleAction(carte.getNom());
+                joueur.ajouterBoutonPossibleAction(new Bouton(carte.getNom(), carte.getNom()));
             for (String nomCarte : joueur.getJeu().getListeNomsCartes())
-                joueur.ajouterChoixPossibleAction(nomCarte);
+                joueur.ajouterBoutonPossibleAction(new Bouton(nomCarte, nomCarte));
             for (Carte carte : joueur.getJeu().getCartesEcartees())
-                joueur.ajouterChoixPossibleAction(carte.getNom());
+                joueur.ajouterBoutonPossibleAction(new Bouton(carte.getNom(), carte.getNom()));
         }
     }
 
