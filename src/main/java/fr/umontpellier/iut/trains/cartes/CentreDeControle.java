@@ -23,12 +23,11 @@ public class CentreDeControle extends Carte {
                 joueur.ajouterChoixPossibleAction(carte.getNom());
             for (String nomCarte : joueur.getJeu().getListeNomsCartes()) {
                 joueur.ajouterChoixPossibleAction(nomCarte);
-                boutonAjouter.add(new Bouton(nomCarte));
+                joueur.ajouterBoutonPossibleAction(new Bouton(nomCarte, nomCarte));
             }
             for (Carte carte : joueur.getJeu().getCartesEcartees()){
                 joueur.ajouterChoixPossibleAction(carte.getNom());
             }
-            jouer(joueur, joueur.choisir("Choissisez une carte à utilisé",null, boutonAjouter, true));
         }
     }
 

@@ -33,9 +33,8 @@ public class CentreDeRenseignements extends Carte {
             for (Carte carte : cartes) {
                 joueur.ajouterChoixPossibleAction(carte.getNom());
                 joueur.log("Carte piochée: " + carte.getNom());
-                boutonAjouter.add(new Bouton(carte.getNom(), carte.getNom()));
+                joueur.ajouterBoutonPossibleAction(new Bouton(carte.getNom(), carte.getNom()));
             }
-            jouer(joueur, joueur.choisir("Choisissez parmis ces cartes celles que vous souhaitez garder", null, boutonAjouter, true));
         }
     }
 

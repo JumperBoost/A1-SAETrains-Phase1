@@ -19,11 +19,10 @@ public class BureauDuChefDeGare extends Carte {
         for (Carte carte : joueur.getMain())
             if (carte.getTypesCarte().contains(Type.ACTION) && !carte.getNom().equals(getNom())) {
                 joueur.ajouterChoixPossibleAction(carte.getNom());
-                boutonAjouter.add(new Bouton(carte.getNom(), carte.getNom()));
+                joueur.ajouterBoutonPossibleAction(new Bouton(carte.getNom(), carte.getNom()));
             }
         if (joueur.getNbChoixPossiblesAction() > 0){
             joueur.setPeutPasser(false);
-            jouer(joueur, joueur.choisir("Choissisez une carte action à utiliser comme celle choisi précédemment", null, boutonAjouter, false));
         }
     }
 

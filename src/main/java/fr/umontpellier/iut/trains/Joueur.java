@@ -80,6 +80,7 @@ public class Joueur {
      * <p>
      * Permet de savoir si on peut utiliser un prompt vide lors de la demande d'un choix
      */
+    private final List<Bouton> boutonPossibleAction = new ArrayList<>();
     private boolean peutPasser;
     /**
      * Couleur du joueur (utilisé par l'interface graphique)
@@ -295,6 +296,14 @@ public class Joueur {
         this.choixPossiblesAction.clear();
     }
 
+    public void ajouterBoutonPossibleAction(Bouton boutonPossible){this.boutonPossibleAction.add(boutonPossible);}
+
+    public void retirerBoutonPossibleAction(Bouton boutonPossible){this.boutonPossibleAction.remove(boutonPossible);}
+
+    public int getNbBoutonPossibleAction(){return this.boutonPossibleAction.size();}
+
+    public void viderBoutonPossibleAction(){this.boutonPossibleAction.clear();}
+
     /**
      * Récupérer l'état de passement
      *
@@ -380,7 +389,7 @@ public class Joueur {
             }
 
             // Choix de l'action à réaliser
-            String choix = choisir(String.format("Tour de %s", this.nom), choixPossibles, null, peutPasser);
+            String choix = choisir(String.format("Tour de %s", this.nom), choixPossibles, boutonPossibleAction, peutPasser);
 
             // Exécuter l'action demandée par le joueur
             if(bonusTrainMatinal != null && carteAction == null)
