@@ -13,9 +13,6 @@ public class PersonnelDeGare extends Carte {
         super.jouer(joueur);
         joueur.setCarteAction(this);
         joueur.setPeutPasser(false);
-        joueur.ajouterChoixPossibleAction("piocher");
-        joueur.ajouterChoixPossibleAction("argent");
-        joueur.ajouterChoixPossibleAction("ferraille");
         joueur.ajouterBoutonPossibleAction(new Bouton("Piochez", "piocher"));
         joueur.ajouterBoutonPossibleAction(new Bouton("Argent", "argent"));
         joueur.ajouterBoutonPossibleAction(new Bouton("Ferraille", "ferraille"));

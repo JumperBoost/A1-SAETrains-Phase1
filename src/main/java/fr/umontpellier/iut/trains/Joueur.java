@@ -70,17 +70,22 @@ public class Joueur {
      */
     private Carte carteAction;
     /**
-     * Liste des choix possibles d'une action Action
+     * Liste des choix possibles d'une carte Action
      * <p>
      * Permet de lister et connaître la liste des choix possibles lors de l'utilisation en cours d'une carte Action
      */
     private final List<String> choixPossiblesAction;
     /**
+     * Liste des boutons possibles d'une carte Action
+     * <p>
+     * Permet de lister et connaître la liste des boutons possibles lors de l'utilisation en cours d'une carte Action
+     */
+    private final List<Bouton> boutonPossiblesAction;
+    /**
      * Booléen pour autoriser un prompt vide
      * <p>
      * Permet de savoir si on peut utiliser un prompt vide lors de la demande d'un choix
      */
-    private final List<Bouton> boutonPossibleAction = new ArrayList<>();
     private boolean peutPasser;
     /**
      * Couleur du joueur (utilisé par l'interface graphique)
@@ -114,6 +119,7 @@ public class Joueur {
         cartesRecues = new ListeDeCartes();
         carteAction = null;
         choixPossiblesAction = new ArrayList<>();
+        boutonPossiblesAction = new ArrayList<>();
         peutPasser = true;
 
         reinitialiserTour();
@@ -277,6 +283,7 @@ public class Joueur {
      */
     public void setCarteAction(Carte carte) {
         viderChoixPossiblesActions();
+        viderBoutonPossiblesAction();
         this.carteAction = carte;
     }
 
@@ -296,13 +303,17 @@ public class Joueur {
         this.choixPossiblesAction.clear();
     }
 
-    public void ajouterBoutonPossibleAction(Bouton boutonPossible){this.boutonPossibleAction.add(boutonPossible);}
+    public void ajouterBoutonPossibleAction(Bouton boutonPossible) {
+        this.boutonPossiblesAction.add(boutonPossible);
+    }
 
-    public void retirerBoutonPossibleAction(Bouton boutonPossible){this.boutonPossibleAction.remove(boutonPossible);}
+    public void retirerBoutonPossibleAction(String boutonPossible) {
+        this.boutonPossiblesAction.stream().filter(bouton -> bouton.valeur().equals(boutonPossible)).findFirst().ifPresent(boutonPossiblesAction::remove);
+    }
 
-    public int getNbBoutonPossibleAction(){return this.boutonPossibleAction.size();}
-
-    public void viderBoutonPossibleAction(){this.boutonPossibleAction.clear();}
+    public void viderBoutonPossiblesAction() {
+        this.boutonPossiblesAction.clear();
+    }
 
     /**
      * Récupérer l'état de passement
@@ -389,7 +400,7 @@ public class Joueur {
             }
 
             // Choix de l'action à réaliser
-            String choix = choisir(String.format("Tour de %s", this.nom), choixPossibles, boutonPossibleAction, peutPasser);
+            String choix = choisir(String.format("Tour de %s", this.nom), choixPossibles, boutonPossiblesAction, peutPasser);
 
             // Exécuter l'action demandée par le joueur
             if(bonusTrainMatinal != null && carteAction == null)

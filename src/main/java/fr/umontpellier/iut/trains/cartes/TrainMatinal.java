@@ -1,5 +1,6 @@
 package fr.umontpellier.iut.trains.cartes;
 
+import fr.umontpellier.iut.trains.Bouton;
 import fr.umontpellier.iut.trains.Joueur;
 
 import java.util.List;
@@ -29,20 +30,20 @@ public class TrainMatinal extends Carte {
                     // En attente du choix de l'emplacement par le joueur
                     carteAchete = carte;
                     carte.acheter(joueur);
-                    joueur.ajouterChoixPossibleAction("oui");
-                    joueur.ajouterChoixPossibleAction("non");
+                    joueur.ajouterBoutonPossibleAction(new Bouton("Oui !", "oui"));
+                    joueur.ajouterBoutonPossibleAction(new Bouton("Non !", "non"));
                 }
             }
         } else if(choix.equals("oui") && carteAchete != null) {
             // Placer la carte achetée dans la pioche
             joueur.getPioche().add(0, carteAchete);
             carteAchete = null;
-            joueur.viderChoixPossiblesActions();
+            joueur.viderBoutonPossiblesAction();
         } else if(choix.equals("non") && carteAchete != null) {
             // Placer la carte achetée dans les cartes reçues
             joueur.getCartesRecues().add(carteAchete);
             carteAchete = null;
-            joueur.viderChoixPossiblesActions();
+            joueur.viderBoutonPossiblesAction();
         } else joueur.executerChoix(choix); // Exécuter le choix du joueur si ce n'est pas un choix de l'effet de la carte
     }
 }

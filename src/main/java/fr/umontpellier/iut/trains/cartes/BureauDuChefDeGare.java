@@ -1,10 +1,6 @@
 package fr.umontpellier.iut.trains.cartes;
 
-import fr.umontpellier.iut.trains.Bouton;
 import fr.umontpellier.iut.trains.Joueur;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class BureauDuChefDeGare extends Carte {
     public BureauDuChefDeGare() {
@@ -15,15 +11,11 @@ public class BureauDuChefDeGare extends Carte {
     public void jouer(Joueur joueur) {
         super.jouer(joueur);
         joueur.setCarteAction(this);
-        List<Bouton> boutonAjouter = new ArrayList<>();
-        for (Carte carte : joueur.getMain())
-            if (carte.getTypesCarte().contains(Type.ACTION) && !carte.getNom().equals(getNom())) {
+        for(Carte carte : joueur.getMain())
+            if(carte.getTypesCarte().contains(Type.ACTION) && !carte.getNom().equals(getNom()))
                 joueur.ajouterChoixPossibleAction(carte.getNom());
-                joueur.ajouterBoutonPossibleAction(new Bouton(carte.getNom(), carte.getNom()));
-            }
-        if (joueur.getNbChoixPossiblesAction() > 0){
+        if(joueur.getNbChoixPossiblesAction() > 0)
             joueur.setPeutPasser(false);
-        }
     }
 
     @Override

@@ -25,13 +25,11 @@ public class CentreDeRenseignements extends Carte {
         ordreCartes.clear();
         cartes.clear();
         joueur.setCarteAction(this);
-        List<Bouton> boutonAjouter = new ArrayList<>();
         if(joueur.getPeutPiocher()) {
             nbCartes = Math.min(4, joueur.getPioche().size() + joueur.getDefausse().size());
             // Piocher les cartes
             cartes.addAll(joueur.piocher(nbCartes));
             for (Carte carte : cartes) {
-                joueur.ajouterChoixPossibleAction(carte.getNom());
                 joueur.log("Carte piochée: " + carte.getNom());
                 joueur.ajouterBoutonPossibleAction(new Bouton(carte.getNom(), carte.getNom()));
             }
@@ -46,17 +44,17 @@ public class CentreDeRenseignements extends Carte {
         } else ordreCartes.add(choix); // Ajouter la carte à l'ordre si elle n'est pas la carte choisie
 
         if(!choix.isEmpty()) {
-            joueur.retirerChoixPossibleAction(choix);
+            joueur.retirerBoutonPossibleAction(choix);
             nbCartes--;
         }
 
         if(nbCartes == 0) {
             if(cartes.count(carteChoisis) > 0)
                 joueur.getMain().add(cartes.retirer(carteChoisis));
-            joueur.setCarteAction(null);
             // Remettre les cartes de la pioche sur le dessus dans l'ordre choisi
             for(String nomCarteO : ordreCartes)
                 joueur.getPioche().add(0, cartes.retirer(nomCarteO));
+            joueur.setCarteAction(null);
             joueur.setPeutPasser(true);
         }
     }

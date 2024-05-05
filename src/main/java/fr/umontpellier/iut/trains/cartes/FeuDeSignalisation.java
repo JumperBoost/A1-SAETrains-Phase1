@@ -18,8 +18,6 @@ public class FeuDeSignalisation extends Carte {
         if(joueur.getPeutPiocher()) {
             joueur.setPeutPasser(false);
             joueur.log("Carte à défausser: " + joueur.recuperer().getNom());
-            joueur.ajouterChoixPossibleAction("oui");
-            joueur.ajouterChoixPossibleAction("non");
             joueur.ajouterBoutonPossibleAction(new Bouton("Oui !", "oui"));
             joueur.ajouterBoutonPossibleAction(new Bouton("Non !", "non"));
         } else if(carte != null)

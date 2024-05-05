@@ -1,6 +1,5 @@
 package fr.umontpellier.iut.trains.cartes;
 
-import fr.umontpellier.iut.trains.Bouton;
 import fr.umontpellier.iut.trains.Joueur;
 
 public class Echangeur extends Carte {
@@ -12,11 +11,9 @@ public class Echangeur extends Carte {
     public void jouer(Joueur joueur) {
         super.jouer(joueur);
         joueur.setCarteAction(this);
-        for (Carte carte : joueur.getCartesEnJeu())
-            if (carte.getFirstType() == Type.TRAIN){
+        for(Carte carte : joueur.getCartesEnJeu())
+            if(carte.getFirstType() == Type.TRAIN)
                 joueur.ajouterChoixPossibleAction(carte.getNom());
-                joueur.ajouterBoutonPossibleAction(new Bouton(carte.getNom(), carte.getNom()));
-            }
     }
 
     @Override

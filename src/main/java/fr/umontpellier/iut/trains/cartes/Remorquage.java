@@ -13,11 +13,9 @@ public class Remorquage extends Carte {
         super.jouer(joueur);
         joueur.setCarteAction(this);
         if(joueur.getDefausse().count(Type.TRAIN) > 0) {
-            for (Carte carte : joueur.getDefausse())
-                if (carte.getFirstType() == Type.TRAIN){
-                    joueur.ajouterChoixPossibleAction(carte.getNom());
+            for(Carte carte : joueur.getDefausse())
+                if(carte.getFirstType() == Type.TRAIN)
                     joueur.ajouterBoutonPossibleAction(new Bouton(carte.getNom(), carte.getNom()));
-                }
             joueur.setPeutPasser(false);
         }
     }
