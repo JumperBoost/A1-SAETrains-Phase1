@@ -1,5 +1,6 @@
 package fr.umontpellier.iut.trains.cartes;
 
+import fr.umontpellier.iut.trains.Bouton;
 import fr.umontpellier.iut.trains.Joueur;
 
 public class Remorquage extends Carte {
@@ -12,9 +13,11 @@ public class Remorquage extends Carte {
         super.jouer(joueur);
         joueur.setCarteAction(this);
         if(joueur.getDefausse().count(Type.TRAIN) > 0) {
-            for(Carte carte : joueur.getDefausse())
-                if(carte.getFirstType() == Type.TRAIN)
+            for (Carte carte : joueur.getDefausse())
+                if (carte.getFirstType() == Type.TRAIN){
                     joueur.ajouterChoixPossibleAction(carte.getNom());
+                    joueur.ajouterBoutonPossibleAction(new Bouton(carte.getNom(), carte.getNom()));
+                }
             joueur.setPeutPasser(false);
         }
     }

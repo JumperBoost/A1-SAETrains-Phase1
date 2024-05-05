@@ -1,5 +1,6 @@
 package fr.umontpellier.iut.trains.cartes;
 
+import fr.umontpellier.iut.trains.Bouton;
 import fr.umontpellier.iut.trains.Joueur;
 
 public class FeuDeSignalisation extends Carte {
@@ -19,6 +20,8 @@ public class FeuDeSignalisation extends Carte {
             joueur.log("Carte à défausser: " + joueur.recuperer().getNom());
             joueur.ajouterChoixPossibleAction("oui");
             joueur.ajouterChoixPossibleAction("non");
+            joueur.ajouterBoutonPossibleAction(new Bouton("Oui !", "oui"));
+            joueur.ajouterBoutonPossibleAction(new Bouton("Non !", "non"));
         } else if(carte != null)
             joueur.setCarteAction(null);    // Si la seconde carte n'est pas piochable, l'effet de la carte est terminé
     }
