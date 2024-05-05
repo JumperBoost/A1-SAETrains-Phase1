@@ -105,7 +105,8 @@ public abstract class Carte {
      * @param choix le choix du joueur utilisé pour l'action
      */
     public void jouer(Joueur joueur, String choix) {
-
+        if(joueur.getSourceClone() != null && !joueur.getSourceClone().getNom().equals(choix))
+            joueur.setSourceClone(null);    // On réinitialise la source clone seulement si le choix est différent de la source clone
     }
 
     /**

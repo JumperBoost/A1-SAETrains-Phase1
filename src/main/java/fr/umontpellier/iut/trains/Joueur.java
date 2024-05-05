@@ -103,6 +103,7 @@ public class Joueur {
     private boolean recevoirFerraille;
     private int bonusFerronnerie;
     private Carte bonusTrainMatinal;
+    private Carte sourceClone;
 
     public Joueur(Jeu jeu, String nom, CouleurJoueur couleur) {
         this.jeu = jeu;
@@ -435,6 +436,7 @@ public class Joueur {
         recevoirFerraille = true;
         bonusFerronnerie = 0;
         bonusTrainMatinal = null;
+        sourceClone = null;
     }
 
     public void executerChoix(String choix) {
@@ -746,5 +748,18 @@ public class Joueur {
 
     public void setBonusTrainMatinal(Carte carteTrainMatinal) {
         this.bonusTrainMatinal = carteTrainMatinal;
+    }
+
+    public Carte getSourceClone() {
+        return sourceClone;
+    }
+
+    /**
+     * Définir la carte ayant servi de modèle pour la copie de l'effet de cette carte
+     *
+     * @param sourceClone la carte ayant servi de modèle
+     */
+    public void setSourceClone(Carte sourceClone) {
+        this.sourceClone = sourceClone;
     }
 }

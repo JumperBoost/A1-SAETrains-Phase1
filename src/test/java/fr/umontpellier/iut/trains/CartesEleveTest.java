@@ -344,14 +344,14 @@ public class CartesEleveTest extends BaseTestClass {
 
         jouerTourPartiel("Bureau du chef de gare","Bureau du chef de gare", "Horaires estivaux", "oui");
 
-        assertTrue(containsReferences(main, c1));
+        assertTrue(containsReferences(main, c1, he));
         assertTrue(containsReferencesInOrder(pioche, fondPioche));
         assertTrue(containsReferences(defausse));
-        assertTrue(containsReferences(cartesEnJeu, c));
+        assertTrue(containsReferences(cartesEnJeu));
         assertTrue(containsReferences(cartesRecues));
         assertEquals(3, getArgent(joueur));
         assertEquals(0, getPointsRails(joueur));
-        assertTrue(containsReferences(cartesEcartees, he));
+        assertTrue(containsReferences(cartesEcartees, c));
     }
     @Test
     void test_BureauDuChefDeGare_BureauDuChefDeGare_joue() {
@@ -765,14 +765,14 @@ public class CartesEleveTest extends BaseTestClass {
 
         jouerTourPartiel("Bureau du chef de gare", "Horaires estivaux", "oui");
 
-        assertTrue(containsReferences(main));
+        assertTrue(containsReferences(main, he));
         assertTrue(containsReferencesInOrder(pioche, fondPioche));
         assertTrue(containsReferences(defausse));
-        assertTrue(containsReferences(cartesEnJeu, c));
+        assertTrue(containsReferences(cartesEnJeu));
         assertTrue(containsReferences(cartesRecues));
         assertEquals(3, getArgent(joueur));
         assertEquals(0, getPointsRails(joueur));
-        assertTrue(containsReferences(cartesEcartees, he));
+        assertTrue(containsReferences(cartesEcartees, c));
     }
 
     @Test
@@ -789,10 +789,10 @@ public class CartesEleveTest extends BaseTestClass {
 
         jouerTourPartiel("Bureau du chef de gare", "Horaires estivaux", "non");
 
-        assertTrue(containsReferences(main));
+        assertTrue(containsReferences(main, he));
         assertTrue(containsReferencesInOrder(pioche, fondPioche));
         assertTrue(containsReferences(defausse));
-        assertTrue(containsReferences(cartesEnJeu, c, he));
+        assertTrue(containsReferences(cartesEnJeu, c));
         assertTrue(containsReferences(cartesRecues));
         assertEquals(0, getArgent(joueur));
         assertEquals(0, getPointsRails(joueur));

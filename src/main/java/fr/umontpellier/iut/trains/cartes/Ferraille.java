@@ -15,8 +15,10 @@ public class Ferraille extends Carte {
          */
         if(joueur.getCartesEnJeu().isEmpty()) {
             Carte c;
+            joueur.getJeu().getReserve().get("Ferraille").add(this);
+            // Déposer toutes les autres cartes FERRAILLE de la main du joueur dans la réserve de FERRAILLE
             while ((c = joueur.getMain().retirer("Ferraille")) != null)
-                joueur.getJeu().getReserve().get("Ferraille").add(0, c);
+                joueur.getJeu().getReserve().get("Ferraille").add(c);
             joueur.setFinTour(true);
         }
     }
