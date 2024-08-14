@@ -1,4 +1,4 @@
-[](ressources/logo.jpeg)
+![](ressources/logo.jpeg)
 
 # Projet - _Trains_
 
